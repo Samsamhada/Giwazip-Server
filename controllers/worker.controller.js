@@ -48,3 +48,23 @@ exports.findAll = (req, res) => {
             });
         });
 };
+
+exports.findOne = (req, res) => {
+    const id = req.params.id;
+
+    Worker.findByPk(id)
+        .then((data) => {
+            if (data) {
+                res.send(data);
+            } else {
+                res.status(400).send({
+                    message: `Cannot find Worker with id=${id}.`,
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error retrieving Worker with id=" + id,
+            });
+        });
+};

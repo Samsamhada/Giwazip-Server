@@ -6,5 +6,5 @@ module.exports = (app) => {
     router.get("/", workers.findAll);
     console.log("worker.routes.js router: " + router);
 
-    app.use("/api/workers", router);
+    app.use("/giwazip/workers", router);
 };

@@ -35,11 +35,5 @@ module.exports = (sequelize, Sequelize) => {
             tableName: "worker",
         }
     );
-    console.log("worker.model.js Worker: " + Worker);
-    console.log("worker.model.js Worker.workerID: " + Worker.workerID);
-    console.log(
-        "worker.model.js Worker === sequelize.models.worker: " +
-            (Worker === sequelize.models.worker)
-    );
     return Worker;
 };

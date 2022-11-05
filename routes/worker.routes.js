@@ -3,8 +3,15 @@ module.exports = (app) => {
 
     var router = require("express").Router();
 
-    router.get("/", workers.findAll);
-    console.log("worker.routes.js router: " + router);
+    router.post("/", workers.create);
 
-    app.use("/api/workers", router);
+    router.get("/", workers.findAll);
+
+    router.get("/:id", workers.findOne);
+
+    router.put("/:id", workers.update);
+
+    router.delete("/:id", workers.delete);
+
+    app.use("/giwazip/workers", router);
 };

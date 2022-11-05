@@ -92,3 +92,27 @@ exports.update = (req, res) => {
             });
         });
 };
+
+exports.delete = (req, res) => {
+    const id = req.params.id;
+
+    Worker.destroy({
+        where: { workerID: id },
+    })
+        .then((num) => {
+            if (num == 1) {
+                res.send({
+                    message: "Worker was deleted successfully!",
+                });
+            } else {
+                res.send({
+                    message: `Cannot delete Worker with id=${id}. Maybe Worker was not found!`,
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Could not delete Worker with id=" + id,
+            });
+        });
+};

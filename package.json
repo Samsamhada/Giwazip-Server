@@ -1,16 +1,41 @@
 {
   "name": "giwazip-server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "body-parser": "^1.20.1",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
-  }
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^6.25.3"
+  },
+  "description": "기와집 서버 레포지토리 입니다.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samsamhada/Giwazip-Server.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "sequelize",
+    "postgresql",
+    "rest",
+    "api"
+  ],
+  "author": "mintaek kim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Samsamhada/Giwazip-Server/issues"
+  },
+  "homepage": "https://github.com/Samsamhada/Giwazip-Server#readme"
 }

@@ -3,6 +3,8 @@ module.exports = (app) => {
 
     var router = require("express").Router();
 
+    router.post("/", workers.create);
+
     router.get("/", workers.findAll);
     console.log("worker.routes.js router: " + router);
 

@@ -41,10 +41,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
-
-    Status.findAll({ where: condition })
+    Status.findAll()
         .then((data) => {
             res.send(data);
             console.log(

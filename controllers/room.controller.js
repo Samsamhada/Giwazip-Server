@@ -75,7 +75,6 @@ exports.findAll = (req, res) => {
             res.status(500).send({
                 message:
                     err.message ||
-                    "Some error occurred while retrieving workers.",
                     "Some error occurred while retrieving rooms.",
             });
             console.log(
@@ -110,3 +109,35 @@ exports.findOne = (req, res) => {
             console.log("Error retrieving Worker with id=" + id);
         });
 };
+
+exports.update = (req, res) => {
+    const id = req.params.id;
+
+    Room.update(req.body, {
+        where: { roomID: id },
+    })
+        .then((num) => {
+            if (num == 1) {
+                res.send({
+                    message: "Room was updated successfully.",
+                });
+                console.log("Room 테이블이 성공적으로 수정되었습니다.");
+            } else {
+                res.send({
+                    message: `Cannot update Room with id=${id}. Maybe Room was not found or req.body is empty!`,
+                });
+                console.log(
+                    `Room 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!`
+                );
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error updating Room with id=" + id,
+            });
+            console.log(
+                `Error: Room 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.`
+            );
+        });
+};
+

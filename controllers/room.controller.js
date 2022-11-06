@@ -8,6 +8,9 @@ exports.create = (req, res) => {
         res.status(400).send({
             message: "Content can not be empty!",
         });
+        console.log(
+            "Error: Room 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
+        );
         return;
     }
 
@@ -43,13 +46,19 @@ exports.create = (req, res) => {
     Room.create(room)
         .then((data) => {
             res.send(data);
+            console.log(
+                "Room 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
+            );
         })
         .catch((err) => {
             res.status(500).send({
                 message:
                     err.message ||
-                    "Some error occurred while creating the Worker.",
+                    "Some error occurred while creating the Room.",
             });
+            console.log(
+                err.message || "Some error occurred while creating the Room."
+            );
         });
 };
 
@@ -60,12 +69,21 @@ exports.findAll = (req, res) => {
     Room.findAll({ where: condition })
         .then((data) => {
             res.send(data);
+            console.log("Room 테이블의 모든 데이터를 성공적으로 조회했습니다.");
         })
         .catch((err) => {
             res.status(500).send({
                 message:
                     err.message ||
                     "Some error occurred while retrieving workers.",
+                    "Some error occurred while retrieving rooms.",
+            });
+            console.log(
+                err.message || "Some error occurred while retrieving rooms."
+            );
+        });
+};
+
 exports.findOne = (req, res) => {
     const id = req.params.id;
 

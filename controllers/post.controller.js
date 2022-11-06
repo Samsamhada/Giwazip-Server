@@ -65,3 +65,30 @@ exports.findAll = (req, res) => {
         });
 };
 
+exports.findOne = (req, res) => {
+    const id = req.params.id;
+
+    Post.findByPk(id)
+        .then((data) => {
+            if (data) {
+                res.send(data);
+                console.log(
+                    `Post 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.`
+                );
+            } else {
+                res.status(400).send({
+                    message: `Cannot find Post with id=${id}.`,
+                });
+                console.log(
+                    `Post 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
+                );
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error retrieving Post with id=" + id,
+            });
+            console.log("Error retrieving Post with id=" + id);
+        });
+};
+

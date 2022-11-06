@@ -3,6 +3,8 @@ module.exports = (app) => {
 
     var router = require("express").Router();
 
+    router.post("/", rooms.create);
+
     router.get("/", rooms.findAll);
     app.use("/giwazip/rooms", router);
 };

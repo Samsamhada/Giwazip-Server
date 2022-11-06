@@ -44,6 +44,7 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 allowNull: false,
                 field: "invite_code",
+                unique: true,
             },
         },
         {

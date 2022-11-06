@@ -13,6 +13,7 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 allowNull: false,
                 field: "user_identifier",
+                unique: true,
             },
             name: {
                 type: Sequelize.STRING,

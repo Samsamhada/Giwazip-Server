@@ -63,10 +63,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
-
-    Room.findAll({ where: condition })
+    Room.findAll()
         .then((data) => {
             res.send(data);
             console.log("Room 테이블의 모든 데이터를 성공적으로 조회했습니다.");
@@ -106,7 +103,7 @@ exports.findOne = (req, res) => {
             res.status(500).send({
                 message: "Error retrieving Room with id=" + id,
             });
-            console.log("Error retrieving Worker with id=" + id);
+            console.log("Error retrieving Room with id=" + id);
         });
 };
 

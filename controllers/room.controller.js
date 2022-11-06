@@ -106,7 +106,7 @@ exports.findOne = (req, res) => {
             res.status(500).send({
                 message: "Error retrieving Room with id=" + id,
             });
-            console.log("Error retrieving Worker with id=" + id);
+            console.log("Error retrieving Room with id=" + id);
         });
 };
 

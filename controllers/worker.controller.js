@@ -8,6 +8,9 @@ exports.create = (req, res) => {
         res.status(400).send({
             message: "Content can not be empty!",
         });
+        console.log(
+            "Error: Worker 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
+        );
         return;
     }
 
@@ -22,6 +25,9 @@ exports.create = (req, res) => {
     Worker.create(worker)
         .then((data) => {
             res.send(data);
+            console.log(
+                "Worker 테이블에 새로운 데이터가 성공적으로 생성되었습니다."
+            );
         })
         .catch((err) => {
             res.status(500).send({
@@ -29,6 +35,9 @@ exports.create = (req, res) => {
                     err.message ||
                     "Some error occurred while creating the Worker.",
             });
+            console.log(
+                err.message || "Some error occurred while creating the Worker."
+            );
         });
 };
 
@@ -39,6 +48,9 @@ exports.findAll = (req, res) => {
     Worker.findAll({ where: condition })
         .then((data) => {
             res.send(data);
+            console.log(
+                "Worker 테이블의 모든 데이터를 성공적으로 조회했습니다."
+            );
         })
         .catch((err) => {
             res.status(500).send({
@@ -46,6 +58,9 @@ exports.findAll = (req, res) => {
                     err.message ||
                     "Some error occurred while retrieving workers.",
             });
+            console.log(
+                err.message || "Some error occurred while retrieving workers."
+            );
         });
 };
 
@@ -56,16 +71,23 @@ exports.findOne = (req, res) => {
         .then((data) => {
             if (data) {
                 res.send(data);
+                console.log(
+                    `Worker 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.`
+                );
             } else {
                 res.status(400).send({
                     message: `Cannot find Worker with id=${id}.`,
                 });
+                console.log(
+                    `Worker 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
+                );
             }
         })
         .catch((err) => {
             res.status(500).send({
                 message: "Error retrieving Worker with id=" + id,
             });
+            console.log("Error retrieving Worker with id=" + id);
         });
 };
 

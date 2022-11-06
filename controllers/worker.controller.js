@@ -26,7 +26,7 @@ exports.create = (req, res) => {
         .then((data) => {
             res.send(data);
             console.log(
-                "Worker 테이블에 새로운 데이터가 성공적으로 생성되었습니다."
+                "Worker 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
             );
         })
         .catch((err) => {
@@ -102,16 +102,23 @@ exports.update = (req, res) => {
                 res.send({
                     message: "Worker was updated successfully.",
                 });
+                console.log("Worker 테이블이 성공적으로 수정되었습니다.");
             } else {
                 res.send({
                     message: `Cannot update Worker with id=${id}. Maybe Worker was not found or req.body is empty!`,
                 });
+                console.log(
+                    `Worker 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다.`
+                );
             }
         })
         .catch((err) => {
             res.status(500).send({
                 message: "Error updating Worker with id=" + id,
             });
+            console.log(
+                `Error: Worker 테이블의 ${id}번 데이터를 수정하는데 오류가 발생했습니다.`
+            );
         });
 };
 
@@ -126,15 +133,22 @@ exports.delete = (req, res) => {
                 res.send({
                     message: "Worker was deleted successfully!",
                 });
+                console.log(
+                    "Worker 테이블에서 해당 데이터가 성공적으로 삭제되었습니다."
+                );
             } else {
                 res.send({
                     message: `Cannot delete Worker with id=${id}. Maybe Worker was not found!`,
                 });
+                console.log(
+                    `Worker 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Worker 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                );
             }
         })
         .catch((err) => {
             res.status(500).send({
                 message: "Could not delete Worker with id=" + id,
             });
+            console.log(`Worker 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`);
         });
 };

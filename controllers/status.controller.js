@@ -140,3 +140,33 @@ exports.update = (req, res) => {
         });
 };
 
+exports.delete = (req, res) => {
+    const id = req.params.id;
+
+    Status.destroy({
+        where: { statusID: id },
+    })
+        .then((num) => {
+            if (num == 1) {
+                res.send({
+                    message: "Status was deleted successfully!",
+                });
+                console.log(
+                    "Status 테이블에서 해당 데이터가 성공적으로 삭제되었습니다!"
+                );
+            } else {
+                res.send({
+                    message: `Cannot delete Status with id=${id}. Maybe Status was not found!`,
+                });
+                console.log(
+                    `Status 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Status 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                );
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Could not delete Stauts with id=" + id,
+            });
+            console.log(`Status 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`);
+        });
+};

@@ -11,5 +11,7 @@ module.exports = (app) => {
 
     router.get("/room/:id", statuses.findByRoomID);
 
+    router.put("/:id", statuses.update);
+
     app.use("/giwazip/statuses", router);
 };

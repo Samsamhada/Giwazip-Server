@@ -109,3 +109,34 @@ exports.findByRoomID = (req, res) => {
         });
 };
 
+exports.update = (req, res) => {
+    const id = req.params.id;
+
+    Status.update(req.body, {
+        where: { statusID: id },
+    })
+        .then((num) => {
+            if (num == 1) {
+                res.send({
+                    message: "Status was updated successfully.",
+                });
+                console.log("Status 테이블이 성공적으로 수정되었습니다.");
+            } else {
+                res.send({
+                    message: `Cannot update Status with id=${id}. Maybe Status was not found or req.body is empty!`,
+                });
+                console.log(
+                    `Status 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!`
+                );
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error updating Status with id=" + id,
+            });
+            console.log(
+                `Error: Status 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.`
+            );
+        });
+};
+

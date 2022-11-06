@@ -141,3 +141,33 @@ exports.update = (req, res) => {
         });
 };
 
+exports.delete = (req, res) => {
+    const id = req.params.id;
+
+    Room.destroy({
+        where: { roomID: id },
+    })
+        .then((num) => {
+            if (num == 1) {
+                res.send({
+                    message: "Room was deleted successfully!",
+                });
+                console.log(
+                    "Room 테이블에서 해당 데이터가 성공적으로 삭제되었습니다!"
+                );
+            } else {
+                res.send({
+                    message: `Cannot delete Room with id=${id}. Maybe Room was not found!`,
+                });
+                console.log(
+                    `Room 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Room 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                );
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Could not delete Room with id=" + id,
+            });
+            console.log(`Room 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`);
+        });
+};

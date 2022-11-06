@@ -161,10 +161,10 @@ exports.delete = (req, res) => {
                 );
             } else {
                 res.send({
-                    message: `Cannot delete Post with id=${id}. Maybe Status was not found!`,
+                    message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
                 });
                 console.log(
-                    `Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Status 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                    `Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.`
                 );
             }
         })

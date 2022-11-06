@@ -9,5 +9,7 @@ module.exports = (app) => {
 
     router.get("/:id", statuses.findOne);
 
+    router.get("/room/:id", statuses.findByRoomID);
+
     app.use("/giwazip/statuses", router);
 };

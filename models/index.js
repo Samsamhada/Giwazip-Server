@@ -23,5 +23,6 @@ db.workers = require("./worker.model.js")(sequelize, Sequelize);
 db.rooms = require("./room.model.js")(sequelize, Sequelize);
 db.statuses = require("./status.model.js")(sequelize, Sequelize);
 db.posts = require("./post.model.js")(sequelize, Sequelize);
+db.photos = require("./photo.model.js")(sequelize, Sequelize);
 
 module.exports = db;

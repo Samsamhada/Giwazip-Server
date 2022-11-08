@@ -11,4 +11,7 @@ module.exports = (app) => {
 
     router.get("/:id", photos.findOne);
 
+    router.get("/post/:id", photos.findByPostID);
+
+    app.use("/giwazip/photos", router);
 };

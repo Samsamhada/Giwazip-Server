@@ -13,5 +13,7 @@ module.exports = (app) => {
 
     router.get("/post/:id", photos.findByPostID);
 
+    router.delete("/:id", photos.delete);
+
     app.use("/giwazip/photos", router);
 };

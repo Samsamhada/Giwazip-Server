@@ -5,6 +5,8 @@ module.exports = (app) => {
 
     var router = require("express").Router();
 
+    router.post("/", imageUploader.single("photo"), photos.create);
+
     router.get("/", photos.findAll);
 
 };

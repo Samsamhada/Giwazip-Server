@@ -114,6 +114,28 @@ exports.findByRoomID = (req, res) => {
         });
 };
 
+exports.findByCategory = (req, res) => {
+    const category = req.params.category;
+
+    Post.findAll({ where: { category: category } })
+        .then((data) => {
+            res.send(data);
+            console.log(
+                `Post 테이블의 category가 ${category}인 모든 데이터를 성공적으로 조회했습니다.`
+            );
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message:
+                    err.message ||
+                    "Some error occurred while retrieving posts.",
+            });
+            console.log(
+                err.message || "Some error occurred while retrieving posts."
+            );
+        });
+};
+
 exports.update = (req, res) => {
     const id = req.params.id;
 
@@ -161,10 +183,10 @@ exports.delete = (req, res) => {
                 );
             } else {
                 res.send({
-                    message: `Cannot delete Post with id=${id}. Maybe Status was not found!`,
+                    message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
                 });
                 console.log(
-                    `Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Status 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                    `Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.`
                 );
             }
         })

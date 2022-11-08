@@ -107,6 +107,28 @@ exports.findOne = (req, res) => {
         });
 };
 
+exports.findByWorkerID = (req, res) => {
+    const id = req.params.id;
+
+    Room.findAll({ where: { workerID: id } })
+        .then((data) => {
+            res.send(data);
+            console.log(
+                `Room 테이블의 workerID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.`
+            );
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message:
+                    err.message ||
+                    "Some error occurred while retrieving rooms.",
+            });
+            console.log(
+                err.message || "Some error occurred while retrieving rooms."
+            );
+        });
+};
+
 exports.update = (req, res) => {
     const id = req.params.id;
 

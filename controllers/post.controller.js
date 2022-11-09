@@ -19,13 +19,26 @@ exports.create = (req, res) => {
         return;
     }
 
+    function stringToDate(str) {
+        let year = str.substr(0, 4);
+        let month = str.substr(5, 2);
+        let day = str.substr(8, 2);
+
+        let hour = str.substr(11, 2);
+        let minute = str.substr(14, 2);
+        let second = str.substr(17, 2);
+        let millisec = str.substr(20, 3);
+
+        return new Date(year, month - 1, day, hour, minute, second, millisec);
+    }
+
     // Create a Status
     const post = {
         roomID: req.body.roomID,
         category: req.body.category,
         type: req.body.type,
         description: req.body.description,
-        createData: req.body.createData,
+        createDate: stringToDate(req.body.createDate.toString()),
     };
 
     Post.create(post)

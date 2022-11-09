@@ -14,6 +14,19 @@ exports.create = (req, res) => {
         return;
     }
 
+    function stringToDate(str) {
+        let year = str.substr(0, 4);
+        let month = str.substr(5, 2);
+        let day = str.substr(8, 2);
+
+        let hour = str.substr(11, 2);
+        let minute = str.substr(14, 2);
+        let second = str.substr(17, 2);
+        let millisec = str.substr(20, 3);
+
+        return new Date(year, month - 1, day, hour, minute, second, millisec);
+    }
+
     function generateRandomString(stringLength = 6) {
         const characters =
             "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -37,8 +50,8 @@ exports.create = (req, res) => {
         workerID: req.body.workerID,
         clientName: req.body.clientName,
         clientNumber: req.body.clientNumber,
-        startDate: req.body.startDate,
-        endDate: req.body.endData,
+        startDate: stringToDate(req.body.startDate.toString()),
+        endDate: stringToDate(req.body.endDate.toString()),
         warrantyTime: req.body.warrantyTime,
         inviteCode: inviteCode,
     };

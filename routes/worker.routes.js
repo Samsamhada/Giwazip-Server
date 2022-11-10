@@ -5,6 +5,20 @@ module.exports = (app) => {
 
     router.post("/", workers.create);
 
+    /**
+     * @swagger
+     * /workers:
+     *   get:
+     *     summary: 모든 업자 정보 조회
+     *     tags: [Worker]
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     */
     router.get("/", workers.findAll);
 
     router.get("/:id", workers.findOne);

@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const swaggerDocs = require("./swagger");
 
 const app = express();
 
@@ -25,6 +26,8 @@ db.sequelize
 app.get("/", (req, res) => {
     res.json({ message: "Hi~" });
 });
+
+app.use(swaggerDocs);
 
 require("./routes/worker.routes")(app);
 require("./routes/room.routes")(app);

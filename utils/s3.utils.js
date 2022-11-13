@@ -21,19 +21,24 @@ const allowedExtensions = [".png", ".jpg", ".jpeg", ".bmp"];
 const imageUploader = multer({
     storage: multerS3({
         s3: s3,
-        bucket: "giwazip-image",
+        bucket: process.env.AWS_BUCKET_NAME,
         key: (req, file, callback) => {
-            const uploadDirectory = "photos";
-            const extension = path.extname(file.originalname);
-            if (!allowedExtensions.includes(extension)) {
-                return callback(new Error("wrong extension"));
+            if (req.header("API-Key") == process.env.API_KEY) {
+                const uploadDirectory = "photos";
+                const extension = path.extname(file.originalname);
+                if (!allowedExtensions.includes(extension)) {
+                    return callback(new Error("wrong extension"));
+                }
+                callback(
+                    null,
+                    `${uploadDirectory}/${moment().format(
+                        "YYYYMMDDHHmmssSSS"
+                    )}-${file.originalname}`
+                );
+            } else {
+                console.log("Connection Fail at Image Uploader");
+                return callback(new Error("Connection Fail"));
             }
-            callback(
-                null,
-                `${uploadDirectory}/${moment().format("YYYYMMDDHHmmssSSS")}-${
-                    file.originalname
-                }`
-            );
         },
         acl: "public-read-write",
     }),

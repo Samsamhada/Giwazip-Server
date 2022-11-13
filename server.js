@@ -1,8 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const dotenv = require("dotenv");
 
 const app = express();
+
+dotenv.config();
 
 var corsOptions = {
     origin: "https://localhost:3000",
@@ -23,7 +26,13 @@ db.sequelize
     });
 
 app.get("/", (req, res) => {
-    res.json({ message: "Hi~" });
+    if (req.header("API-Key") == process.env.API_KEY) {
+        res.json({ message: "Hi~" });
+        console.log("Connection Success at /");
+    } else {
+        res.json({ message: "Connection Fail" });
+        console.log("Connection Fail at /");
+    }
 });
 
 require("./routes/worker.routes")(app);

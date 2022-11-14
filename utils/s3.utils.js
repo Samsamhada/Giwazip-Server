@@ -5,6 +5,7 @@ const path = require("path");
 const moment = require("moment");
 
 const dotenv = require("dotenv");
+const chalk = require("chalk");
 
 dotenv.config();
 
@@ -29,6 +30,11 @@ const imageUploader = multer({
                 if (!allowedExtensions.includes(extension)) {
                     return callback(new Error("wrong extension"));
                 }
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        "사진 업로드에 성공했습니다."
+                );
                 callback(
                     null,
                     `${uploadDirectory}/${moment().format(
@@ -36,7 +42,11 @@ const imageUploader = multer({
                     )}-${file.originalname}`
                 );
             } else {
-                console.log("Connection Fail at Image Uploader");
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " Connection Fail at Image Uploader"
+                );
                 return callback(new Error("Connection Fail"));
             }
         },

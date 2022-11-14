@@ -2,6 +2,8 @@ const db = require("../models");
 const Post = db.posts;
 const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
+const chalk = require("chalk");
+const moment = require("moment");
 
 dotenv.config();
 
@@ -20,7 +22,9 @@ exports.create = (req, res) => {
                 message: "Content can not be empty!",
             });
             console.log(
-                "Error: Post 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
+                `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                    chalk.bgRed("Error:") +
+                    "Post 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
             );
             return;
         }
@@ -59,7 +63,9 @@ exports.create = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    "Post 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        " Post 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
                 );
             })
             .catch((err) => {
@@ -69,13 +75,20 @@ exports.create = (req, res) => {
                         "Some error occurred while creating the Post.",
                 });
                 console.log(
-                    err.message ||
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " " +
+                        err.message ||
                         "Some error occurred while creating the Post."
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log("Connection Fail at POST /posts");
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                "Connection Fail at POST /posts"
+        );
     }
 };
 
@@ -85,7 +98,9 @@ exports.findAll = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    "Post 테이블의 모든 데이터를 성공적으로 조회했습니다."
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        " Post 테이블의 모든 데이터를 성공적으로 조회했습니다."
                 );
             })
             .catch((err) => {
@@ -95,12 +110,20 @@ exports.findAll = (req, res) => {
                         "Some error occurred while retrieving posts.",
                 });
                 console.log(
-                    err.message || "Some error occurred while retrieving posts."
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " " +
+                        err.message ||
+                        "Some error occurred while retrieving posts."
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log("Connection Fail at GET /posts");
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                " Connection Fail at GET /posts"
+        );
     }
 };
 
@@ -113,14 +136,18 @@ exports.findOne = (req, res) => {
                 if (data) {
                     res.send(data);
                     console.log(
-                        `Post 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.`
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgGreen("Success:") +
+                            ` Post 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.`
                     );
                 } else {
                     res.status(400).send({
                         message: `Cannot find Post with id=${id}.`,
                     });
                     console.log(
-                        `Post 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgRed("Error:") +
+                            ` Post 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
                     );
                 }
             })
@@ -128,11 +155,20 @@ exports.findOne = (req, res) => {
                 res.status(500).send({
                     message: "Error retrieving Post with id=" + id,
                 });
-                console.log("Error retrieving Post with id=" + id);
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " Error retrieving Post with id=" +
+                        id
+                );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log(`Connection Fail at GET /posts/${id}`);
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                ` Connection Fail at GET /posts/${id}`
+        );
     }
 };
 
@@ -144,7 +180,9 @@ exports.findByRoomID = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    `Post 테이블의 roomID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.`
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        ` Post 테이블의 roomID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.`
                 );
             })
             .catch((err) => {
@@ -154,12 +192,20 @@ exports.findByRoomID = (req, res) => {
                         "Some error occurred while retrieving posts.",
                 });
                 console.log(
-                    err.message || "Some error occurred while retrieving posts."
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " " +
+                        err.message ||
+                        "Some error occurred while retrieving posts."
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log(`Connection Fail at GET /posts/room/${id}`);
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                `Connection Fail at GET /posts/room/${id}`
+        );
     }
 };
 
@@ -171,7 +217,9 @@ exports.findByCategory = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    `Post 테이블의 category가 ${category}인 모든 데이터를 성공적으로 조회했습니다.`
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        ` Post 테이블의 category가 ${category}인 모든 데이터를 성공적으로 조회했습니다.`
                 );
             })
             .catch((err) => {
@@ -181,12 +229,20 @@ exports.findByCategory = (req, res) => {
                         "Some error occurred while retrieving posts.",
                 });
                 console.log(
-                    err.message || "Some error occurred while retrieving posts."
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " " +
+                        err.message ||
+                        "Some error occurred while retrieving posts."
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log(`Connect Fail at GET /posts/category/${category}`);
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                ` Connect Fail at GET /posts/category/${category}`
+        );
     }
 };
 
@@ -202,13 +258,19 @@ exports.update = (req, res) => {
                     res.send({
                         message: "Post was updated successfully.",
                     });
-                    console.log("Post 테이블이 성공적으로 수정되었습니다.");
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgGreen("Success:") +
+                            " Post 테이블이 성공적으로 수정되었습니다."
+                    );
                 } else {
                     res.send({
                         message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
                     });
                     console.log(
-                        `Post 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!`
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgRed("Error:") +
+                            ` Post 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!`
                     );
                 }
             })
@@ -217,12 +279,18 @@ exports.update = (req, res) => {
                     message: "Error updating Post with id=" + id,
                 });
                 console.log(
-                    `Error: Post 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.`
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        ` Post 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.`
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log(`Connection Fail at PUT /posts/${id}`);
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                ` Connection Fail at PUT /posts/${id}`
+        );
     }
 };
 
@@ -239,14 +307,18 @@ exports.delete = (req, res) => {
                         message: "Post was deleted successfully!",
                     });
                     console.log(
-                        "Post 테이블에서 해당 데이터가 성공적으로 삭제되었습니다!"
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgGreen("Success:") +
+                            " Post 테이블에서 해당 데이터가 성공적으로 삭제되었습니다!"
                     );
                 } else {
                     res.send({
                         message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
                     });
                     console.log(
-                        `Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgRed("Error:") +
+                            ` Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.`
                     );
                 }
             })
@@ -255,11 +327,17 @@ exports.delete = (req, res) => {
                     message: "Could not delete Post with id=" + id,
                 });
                 console.log(
-                    `Post 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        ` Post 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
-        console.log(`Connection Fail at DELETE /posts/${id}`);
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                ` Connection Fail at DELETE /posts/${id}`
+        );
     }
 };

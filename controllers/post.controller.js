@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
 const chalk = require("chalk");
 const moment = require("moment");
+const { sequelize, Sequelize } = require("../models");
 
 dotenv.config();
 
@@ -56,7 +57,6 @@ exports.create = (req, res) => {
             category: req.body.category,
             type: req.body.type,
             description: req.body.description,
-            createDate: stringToDate(req.body.createDate.toString()),
         };
 
         Post.create(post)

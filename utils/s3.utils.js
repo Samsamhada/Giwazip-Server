@@ -17,7 +17,18 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-const allowedExtensions = [".png", ".jpg", ".jpeg", ".bmp"];
+const allowedExtensions = [
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".bmp",
+    ".PNG",
+    ".JPG",
+    ".JPEG",
+    ".BMP",
+    ".heic",
+    ".HEIC",
+];
 
 const imageUploader = multer({
     storage: multerS3({

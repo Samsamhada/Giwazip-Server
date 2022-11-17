@@ -12,7 +12,7 @@ const apiKey = process.env.API_KEY;
 exports.create = (req, res) => {
     if (req.header("API-Key") == apiKey) {
         // Validate request
-        if (!req.body.userIdentifier || !req.body.name || !req.body.email) {
+        if (!req.body.userIdentifier) {
             res.status(400).send({
                 message: "Content can not be empty!",
             });
@@ -24,10 +24,26 @@ exports.create = (req, res) => {
             return;
         }
 
+        let lastName = req.body.lastName;
+        let firstName = req.body.firstName;
+        let name = "";
+
+        if (!lastName && !firstName) {
+            name = "익명의 유저";
+        } else {
+            if (!lastName) {
+                lastName = "";
+            }
+            if (!firstName) {
+                firstName = "";
+            }
+            name = lastName + firstName;
+        }
+
         // Create a Worker
         const worker = {
             userIdentifier: req.body.userIdentifier,
-            name: req.body.name,
+            name: name,
             email: req.body.email,
             number: req.body.number,
         };

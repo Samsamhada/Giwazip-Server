@@ -27,6 +27,7 @@ exports.create = (req, res) => {
         let lastName = req.body.lastName;
         let firstName = req.body.firstName;
         let name = "";
+        let email = req.body.email;
 
         if (!lastName && !firstName) {
             name = "익명의 유저";
@@ -40,11 +41,15 @@ exports.create = (req, res) => {
             name = lastName + firstName;
         }
 
+        if (!email) {
+            email = email;
+        }
+
         // Create a Worker
         const worker = {
             userIdentifier: req.body.userIdentifier,
             name: name,
-            email: req.body.email,
+            email: email,
             number: req.body.number,
         };
 

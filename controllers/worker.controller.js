@@ -42,7 +42,7 @@ exports.create = (req, res) => {
         }
 
         if (!email) {
-            email = email;
+            email = "";
         }
 
         // Create a Worker

@@ -9,11 +9,11 @@ const app = express();
 
 dotenv.config();
 
-// var corsOptions = {
-//     origin: "https://localhost:3000",
-// };
+var corsOptions = {
+    origin: "https://localhost:3000",
+};
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

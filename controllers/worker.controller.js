@@ -19,7 +19,10 @@ exports.create = (req, res) => {
             console.log(
                 `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                     chalk.bgRed("Error:") +
-                    " Worker 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
+                    " Worker 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: " +
+                    (req.header("X-FORWARDED-FOR") ||
+                        req.socket.remoteAddress) +
+                    ")"
             );
             return;
         }
@@ -59,7 +62,10 @@ exports.create = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Worker 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
+                        " Worker 테이블에 새로운 데이터가 성공적으로 추가되었습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -73,7 +79,10 @@ exports.create = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while creating the Worker."
+                        "Some error occurred while creating the Worker. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -81,7 +90,9 @@ exports.create = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at POST /workers"
+                " Connection Fail at POST /workers (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -94,7 +105,10 @@ exports.findAll = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Worker 테이블의 모든 데이터를 성공적으로 조회했습니다."
+                        " Worker 테이블의 모든 데이터를 성공적으로 조회했습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -108,7 +122,10 @@ exports.findAll = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while retrieving workers."
+                        "Some error occurred while retrieving workers. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -116,7 +133,9 @@ exports.findAll = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at GET /workers"
+                " Connection Fail at GET /workers (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -132,7 +151,10 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            " Worker 테이블의 ${id}번 데이터를 성공적으로 조회했습니다."
+                            " Worker 테이블의 ${id}번 데이터를 성공적으로 조회했습니다. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.status(400).send({
@@ -141,7 +163,11 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Worker 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
+                            ` Worker 테이블에서 ${id}번 데이터를 찾을 수 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -160,7 +186,10 @@ exports.findOne = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error: ") +
-                ` Connection Fail at GET /workers/${id}`
+                ` Connection Fail at GET /workers/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -180,7 +209,10 @@ exports.update = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            " Worker 테이블이 성공적으로 수정되었습니다."
+                            " Worker 테이블이 성공적으로 수정되었습니다. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.send({
@@ -189,7 +221,11 @@ exports.update = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Worker 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다.`
+                            ` Worker 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -200,7 +236,11 @@ exports.update = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
-                        ` Worker 테이블의 ${id}번 데이터를 수정하는데 오류가 발생했습니다.`
+                        ` Worker 테이블의 ${id}번 데이터를 수정하는데 오류가 발생했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -208,7 +248,10 @@ exports.update = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at PUT /workers/${id}`
+                ` Connection Fail at PUT /workers/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -228,7 +271,11 @@ exports.delete = (req, res) => {
                     console.log(
                         `[${moment().format(
                             "YYYY-MM-DD HH:mm:ss.SSS"
-                        )}] Worker 테이블에서 해당 데이터가 성공적으로 삭제되었습니다.`
+                        )}] Worker 테이블에서 해당 데이터가 성공적으로 삭제되었습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.send({
@@ -237,7 +284,11 @@ exports.delete = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Worker 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Worker 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                            ` Worker 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Worker 테이블에서 해당 데이터를 찾을 수 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -248,7 +299,11 @@ exports.delete = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
-                        ` Worker 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`
+                        ` Worker 테이블의 ${id}번 데이터를 삭제할 수 없습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -256,7 +311,10 @@ exports.delete = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at DELETE /workers/${id}`
+                ` Connection Fail at DELETE /workers/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };

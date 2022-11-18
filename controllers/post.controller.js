@@ -25,7 +25,10 @@ exports.create = (req, res) => {
             console.log(
                 `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                     chalk.bgRed("Error:") +
-                    "Post 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
+                    "Post 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: " +
+                    (req.header("X-FORWARDED-FOR") ||
+                        req.socket.remoteAddress) +
+                    ")"
             );
             return;
         }
@@ -65,7 +68,10 @@ exports.create = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Post 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
+                        " Post 테이블에 새로운 데이터가 성공적으로 추가되었습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -79,7 +85,10 @@ exports.create = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while creating the Post."
+                        "Some error occurred while creating the Post. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -87,7 +96,9 @@ exports.create = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                "Connection Fail at POST /posts"
+                "Connection Fail at POST /posts (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -100,7 +111,10 @@ exports.findAll = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Post 테이블의 모든 데이터를 성공적으로 조회했습니다."
+                        " Post 테이블의 모든 데이터를 성공적으로 조회했습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -114,7 +128,10 @@ exports.findAll = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while retrieving posts."
+                        "Some error occurred while retrieving posts. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -122,7 +139,9 @@ exports.findAll = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at GET /posts"
+                " Connection Fail at GET /posts (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -138,7 +157,11 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            ` Post 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.`
+                            ` Post 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.status(400).send({
@@ -147,7 +170,11 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Post 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
+                            ` Post 테이블에서 ${id}번 데이터를 찾을 수 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -159,7 +186,11 @@ exports.findOne = (req, res) => {
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
                         " Error retrieving Post with id=" +
-                        id
+                        id +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -167,7 +198,10 @@ exports.findOne = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at GET /posts/${id}`
+                ` Connection Fail at GET /posts/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -182,7 +216,11 @@ exports.findByRoomID = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        ` Post 테이블의 roomID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.`
+                        ` Post 테이블의 roomID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -196,7 +234,10 @@ exports.findByRoomID = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while retrieving posts."
+                        "Some error occurred while retrieving posts. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -204,7 +245,10 @@ exports.findByRoomID = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                `Connection Fail at GET /posts/room/${id}`
+                `Connection Fail at GET /posts/room/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -219,7 +263,11 @@ exports.findByCategory = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        ` Post 테이블의 category가 ${category}인 모든 데이터를 성공적으로 조회했습니다.`
+                        ` Post 테이블의 category가 ${category}인 모든 데이터를 성공적으로 조회했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -233,7 +281,10 @@ exports.findByCategory = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while retrieving posts."
+                        "Some error occurred while retrieving posts. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -241,7 +292,10 @@ exports.findByCategory = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connect Fail at GET /posts/category/${category}`
+                ` Connect Fail at GET /posts/category/${category}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -261,7 +315,10 @@ exports.update = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            " Post 테이블이 성공적으로 수정되었습니다."
+                            " Post 테이블이 성공적으로 수정되었습니다. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.send({
@@ -270,7 +327,11 @@ exports.update = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Post 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!`
+                            ` Post 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -281,7 +342,11 @@ exports.update = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
-                        ` Post 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.`
+                        ` Post 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -289,7 +354,10 @@ exports.update = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at PUT /posts/${id}`
+                ` Connection Fail at PUT /posts/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -309,7 +377,10 @@ exports.delete = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            " Post 테이블에서 해당 데이터가 성공적으로 삭제되었습니다!"
+                            " Post 테이블에서 해당 데이터가 성공적으로 삭제되었습니다! (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.send({
@@ -318,7 +389,11 @@ exports.delete = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                            ` Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -329,7 +404,11 @@ exports.delete = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
-                        ` Post 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`
+                        ` Post 테이블의 ${id}번 데이터를 삭제할 수 없습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -337,7 +416,10 @@ exports.delete = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at DELETE /posts/${id}`
+                ` Connection Fail at DELETE /posts/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };

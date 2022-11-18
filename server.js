@@ -39,14 +39,18 @@ app.get("/", (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgGreen("Success:") +
-                " Connection Success at /"
+                " Connection Success at / (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     } else {
         res.json({ message: "Connection Fail" });
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at /"
+                " Connection Fail at / (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 });

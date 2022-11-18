@@ -44,7 +44,10 @@ const imageUploader = multer({
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        "사진 업로드에 성공했습니다."
+                        "사진 업로드에 성공했습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
                 callback(
                     null,
@@ -56,7 +59,10 @@ const imageUploader = multer({
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
-                        " Connection Fail at Image Uploader"
+                        " Connection Fail at Image Uploader (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
                 return callback(new Error("Connection Fail"));
             }

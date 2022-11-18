@@ -19,7 +19,10 @@ exports.create = (req, res) => {
             console.log(
                 `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                     chalk.bgRed("Error:") +
-                    " Photo 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다."
+                    " Photo 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: " +
+                    (req.header("X-FORWARDED-FOR") ||
+                        req.socket.remoteAddress) +
+                    ")"
             );
             return;
         }
@@ -36,7 +39,10 @@ exports.create = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Photo 테이블에 새로운 데이터가 성공적으로 추가되었습니다."
+                        " Photo 테이블에 새로운 데이터가 성공적으로 추가되었습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -50,7 +56,10 @@ exports.create = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while creating the Photo."
+                        "Some error occurred while creating the Photo. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -58,7 +67,9 @@ exports.create = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at POST /photos"
+                " Connection Fail at POST /photos (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -71,7 +82,10 @@ exports.findAll = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Photo 테이블의 모든 데이터를 성공적으로 조회했습니다."
+                        " Photo 테이블의 모든 데이터를 성공적으로 조회했습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -85,7 +99,10 @@ exports.findAll = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while retrieving photos."
+                        "Some error occurred while retrieving photos. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -93,7 +110,9 @@ exports.findAll = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at GET /photos"
+                " Connection Fail at GET /photos (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -109,7 +128,11 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            ` Photo 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.`
+                            ` Photo 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.status(400).send({
@@ -118,7 +141,11 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Photo 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`
+                            ` Photo 테이블에서 ${id}번 데이터를 찾을 수 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -130,7 +157,11 @@ exports.findOne = (req, res) => {
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
                         " Error retrieving Photo with id=" +
-                        id
+                        id +
+                        "(IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -138,7 +169,10 @@ exports.findOne = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at GET /photos/${id}`
+                ` Connection Fail at GET /photos/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -153,7 +187,11 @@ exports.findByPostID = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        ` Photo 테이블의 postID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.`
+                        ` Photo 테이블의 postID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             })
             .catch((err) => {
@@ -167,7 +205,10 @@ exports.findByPostID = (req, res) => {
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while retrieving photos."
+                        "Some error occurred while retrieving photos. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                 );
             });
     } else {
@@ -175,7 +216,10 @@ exports.findByPostID = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at GET /photos/post/${id}`
+                ` Connection Fail at GET /photos/post/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };
@@ -195,7 +239,10 @@ exports.delete = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            " Photo 테이블에서 해당 데이터가 성공적으로 삭제되었습니다!"
+                            " Photo 테이블에서 해당 데이터가 성공적으로 삭제되었습니다! (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 } else {
                     res.send({
@@ -204,7 +251,11 @@ exports.delete = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            ` Photo 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Photo 테이블에서 해당 데이터를 찾을 수 없습니다.`
+                            ` Photo 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Photo 테이블에서 해당 데이터를 찾을 수 없습니다.` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
                     );
                 }
             })
@@ -215,7 +266,11 @@ exports.delete = (req, res) => {
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
-                        ` Photo 테이블의 ${id}번 데이터를 삭제할 수 없습니다.`
+                        ` Photo 테이블의 ${id}번 데이터를 삭제할 수 없습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
                 );
             });
     } else {
@@ -223,7 +278,10 @@ exports.delete = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                ` Connection Fail at DELETE /photos/${id}`
+                ` Connection Fail at DELETE /photos/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };

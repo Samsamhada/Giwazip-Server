@@ -33,27 +33,27 @@ db.sequelize
         );
     });
 
-app.get("/", (req, res) => {
-    if (req.header("API-Key") == process.env.API_KEY) {
-        res.json({ message: "Hi~" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgGreen("Success:") +
-                " Connection Success at / (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    } else {
-        res.json({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                " Connection Fail at / (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-});
+// app.get("/", (req, res) => {
+//     if (req.header("API-Key") == process.env.API_KEY) {
+//         res.json({ message: "Hi~" });
+//         console.log(
+//             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+//                 chalk.bgGreen("Success:") +
+//                 " Connection Success at / (IP: " +
+//                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+//                 ")"
+//         );
+//     } else {
+//         res.json({ message: "Connection Fail" });
+//         console.log(
+//             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+//                 chalk.bgRed("Error:") +
+//                 " Connection Fail at / (IP: " +
+//                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+//                 ")"
+//         );
+//     }
+// });
 
 require("./routes/worker.routes")(app);
 require("./routes/room.routes")(app);

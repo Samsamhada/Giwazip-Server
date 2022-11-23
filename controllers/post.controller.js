@@ -1,5 +1,6 @@
 const db = require("../models");
 const Post = db.posts;
+const Photo = db.photos;
 const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
 const chalk = require("chalk");
@@ -217,6 +218,62 @@ exports.findByRoomID = (req, res) => {
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
                         ` Post 테이블의 roomID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message:
+                        err.message ||
+                        "Some error occurred while retrieving posts.",
+                });
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " " +
+                        err.message ||
+                        "Some error occurred while retrieving posts. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                `Connection Fail at GET /posts/room/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
+        );
+    }
+};
+
+exports.findByRoomIDWithPhoto = (req, res) => {
+    const id = req.params.id;
+
+    if (req.header("API-Key") == apiKey) {
+        Post.findAll({
+            where: { roomID: id },
+            include: [
+                {
+                    model: Photo,
+                    as: "photos",
+                    attributes: ["photoID", "photoPath"],
+                },
+            ],
+        })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        ` Post 테이블의 roomID가 ${id}인 사진을 포함한 모든 데이터를 성공적으로 조회했습니다.` +
                         " (IP: " +
                         (req.header("X-FORWARDED-FOR") ||
                             req.socket.remoteAddress) +

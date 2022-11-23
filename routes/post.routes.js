@@ -11,6 +11,8 @@ module.exports = (app) => {
 
     router.get("/room/:id", posts.findByRoomID);
 
+    router.get("/photo/room/:id", posts.findByRoomIDWithPhoto);
+
     router.get("/category/:category", posts.findByCategory);
 
     router.put("/:id", posts.update);

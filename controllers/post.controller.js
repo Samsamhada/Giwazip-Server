@@ -302,7 +302,7 @@ exports.findByRoomIDWithPhoto = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                `Connection Fail at GET /posts/room/${id}` +
+                `Connection Fail at GET /posts/photo/room/${id}` +
                 " (IP: " +
                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
                 ")"

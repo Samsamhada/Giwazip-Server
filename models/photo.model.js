@@ -27,12 +27,12 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    Photo.associate = (models) => {
-        Photo.belongsTo(models.Post, {
-            foreignKey: "postID",
-            sourceKey: "postID",
-        });
-    };
+    // Photo.associate = (models) => {
+    //     Photo.belongsTo(models.Post, {
+    //         foreignKey: "postID",
+    //         sourceKey: "postID",
+    //     });
+    // };
 
     return Photo;
 };

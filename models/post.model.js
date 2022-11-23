@@ -44,12 +44,16 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    Post.associate = (models) => {
-        Post.belongsTo(models.Room, {
-            foreignKey: "roomID",
-            sourceKey: "roomID",
-        });
-    };
+    // Post.associate = (models) => {
+    //     Post.belongsTo(models.Room, {
+    //         foreignKey: "roomID",
+    //         sourceKey: "roomID",
+    //     });
+    //     Post.hasMany(models.Photo, {
+    //         foreignKey: "postID",
+    //         sourceKey: "postID",
+    //     });
+    // };
 
     return Post;
 };

@@ -36,5 +36,13 @@ module.exports = (sequelize, Sequelize) => {
             tableName: "worker",
         }
     );
+
+    // Worker.associate = (models) => {
+    //     Worker.hasMany(models.Room, {
+    //         foreignKey: "workerID",
+    //         sourceKey: "workerID",
+    //     });
+    // };
+
     return Worker;
 };

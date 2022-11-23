@@ -31,12 +31,12 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    Status.associate = (models) => {
-        Status.belongsTo(models.Room, {
-            foreignKey: "roomID",
-            sourceKey: "roomID",
-        });
-    };
+    // Status.associate = (models) => {
+    //     Status.belongsTo(models.Room, {
+    //         foreignKey: "roomID",
+    //         sourceKey: "roomID",
+    //     });
+    // };
 
     return Status;
 };

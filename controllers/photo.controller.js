@@ -224,6 +224,68 @@ exports.findByPostID = (req, res) => {
     }
 };
 
+exports.update = (req, res) => {
+    const id = req.params.id;
+
+    if (req.header("API-Key") == apiKey) {
+        Photo.update(req.body, {
+            where: { photoID: id },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    res.send({
+                        message: "Photo was updated successfully.",
+                    });
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgGreen("Success:") +
+                            " Photo 테이블이 성공적으로 수정되었습니다. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                    );
+                } else {
+                    res.send({
+                        message: `Cannot update Photo with id=${id}. Maybe Photo was not found or req.body is empty!`,
+                    });
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgRed("Error:") +
+                            ` Photo 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: "Error updating Post with id=" + id,
+                });
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        ` Photo 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                ` Connection Fail at PUT /photos/${id}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
+        );
+    }
+};
+
 exports.delete = (req, res) => {
     const id = req.params.id;
 

@@ -261,7 +261,7 @@ exports.update = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: "Error updating Post with id=" + id,
+                    message: "Error updating Photo with id=" + id,
                 });
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +

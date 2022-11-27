@@ -19,7 +19,14 @@ dotenv.config();
 exports.appleAuth = async (req, res) => {
     let { code } = req.body;
     if (!code) {
-        res.status(200).json(NULL_VALUE);
+        res.status(200).json({ message: "Apple Login Try" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgGreen("Success:") +
+                " Apple Login이 시도 되었습니다. (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
+        );
         return;
     }
     const response = await auth.accessToken(code);

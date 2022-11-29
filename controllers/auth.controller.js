@@ -36,7 +36,8 @@ exports.appleAuth = async (req, res) => {
     try {
         console.log("try ok");
         const tokenDecode = jwt.decode(token);
-        console.log("token decode:" + tokenDecode);
+        console.log("token decode: " + tokenDecode);
+        console.log("token decode header: " + tokenDecode.header);
         console.log("token decode");
         const response = await auth.accessToken(code);
         console.log("response ok");

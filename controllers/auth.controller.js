@@ -18,6 +18,7 @@ dotenv.config();
 
 exports.appleAuth = async (req, res) => {
     let code = req.body.code;
+    let token = req.body.token;
     console.log("code: " + code);
     console.log("token: " + req.body.token);
     if (!code) {
@@ -35,6 +36,7 @@ exports.appleAuth = async (req, res) => {
     try {
         console.log("try ok");
         const tokenDecode = jwt.decode(token);
+        console.log("token decode:" + tokenDecode);
         console.log("token decode");
         const response = await auth.accessToken(code);
         console.log("response ok");

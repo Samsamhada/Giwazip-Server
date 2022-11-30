@@ -35,20 +35,27 @@ exports.appleAuth = async (req, res) => {
 
     try {
         console.log("try ok");
-        const tokenDecode = jwt.decode(token);
-        console.log("token decode: " + tokenDecode);
-        console.log("token decode header: " + tokenDecode.header);
-        console.log("token decode");
-        const response = await auth.accessToken(code);
-        console.log("response ok");
-        const idToken = jwt.decode(response.id_token);
-        console.log("idToken ok");
+        const base64DecodedText = Buffer.from(
+            base64EncodedText,
+            "base64"
+        ).toString("utf8");
+        console.log("Base64 Decoded Text : " + base64DecodedText);
+        const decodeToken = jwt.decode(base64DecodedText);
+        console.log("decodeToken: " + decodeToken);
+        // const tokenDecode = jwt.decode(token);
+        // console.log("token decode: " + tokenDecode);
+        // console.log("token decode header: " + tokenDecode.header);
+        // console.log("token decode");
+        // const response = await auth.accessToken(code);
+        // console.log("response ok");
+        // const idToken = jwt.decode(response.id_token);
+        // console.log("idToken ok");
         const name = req.body.name;
         console.log("name ok");
-        const email = idToken.email;
-        console.log("email ok");
-        const sub = idToken.sub;
-        console.log("sub ok");
+        // const email = idToken.email;
+        // console.log("email ok");
+        // const sub = idToken.sub;
+        // console.log("sub ok");
 
         if (!name) {
             name = "익명의 유저";

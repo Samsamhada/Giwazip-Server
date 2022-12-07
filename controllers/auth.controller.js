@@ -37,14 +37,6 @@ exports.appleAuth = async (req, res) => {
     const decodeToken = jwt.decode(base64DecodedText);
     const email = decodeToken.email;
 
-    if (!name) {
-        name = "익명의 유저";
-    }
-
-    if (!email) {
-        email = "";
-    }
-
     // Create a Worker
     const worker = {
         userIdentifier: decodeToken.sub,

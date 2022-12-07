@@ -151,7 +151,7 @@ exports.findOne = (req, res) => {
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +
-                            " Worker 테이블의 ${id}번 데이터를 성공적으로 조회했습니다. (IP: " +
+                            ` Worker 테이블의 ${id}번 데이터를 성공적으로 조회했습니다. (IP: ` +
                             (req.header("X-FORWARDED-FOR") ||
                                 req.socket.remoteAddress) +
                             ")"

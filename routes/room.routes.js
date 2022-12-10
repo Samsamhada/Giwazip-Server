@@ -11,6 +11,8 @@ module.exports = (app) => {
 
     router.get("/worker/:id", rooms.findByWorkerID);
 
+    router.get("/invite_code/:inviteCode", rooms.findByInviteCode);
+
     router.put("/:id", rooms.update);
 
     router.delete("/:id", rooms.delete);

@@ -383,6 +383,68 @@ exports.update = (req, res) => {
     }
 };
 
+exports.updateClientNumber = (req, res) => {
+    const inviteCode = req.params.inviteCode;
+
+    if (req.header("API-Key") == apiKey) {
+        Room.update(req.body, {
+            where: { inviteCode: inviteCode },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    res.send({
+                        message: "Client Joined Room Succesfully.",
+                    });
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgGreen("Success:") +
+                            " 고객이 방에 입장하는데 성공했습니다. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                    );
+                } else {
+                    res.send({
+                        message: `Cannot join Room with invitedCode = ${inviteCode}. Maybe Room was not found or req.body is empty!`,
+                    });
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgRed("Error:") +
+                            ` 초대코드가 ${invitedCode}인 방에 입장할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!` +
+                            " (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: "Error Joining Room with inviteCode=" + inviteCode,
+                });
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        `초대코드가 ${inviteCode}인 방에 입장하는 데 오류가 발생했습니다.` +
+                        " (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                ` Connection Fail at PUT /rooms/invite_code/${inviteCode}` +
+                " (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
+        );
+    }
+};
+
 exports.delete = (req, res) => {
     const id = req.params.id;
 

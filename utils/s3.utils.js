@@ -98,6 +98,10 @@ const imageUploader = multer({
         },
         acl: "public-read-write",
     }),
+    limits: {
+        fileSize: maxSize,
+        files: 1,
+    },
 });
 
 module.exports = imageUploader;

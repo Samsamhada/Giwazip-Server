@@ -39,6 +39,14 @@ const imageUploader = multer({
                 const uploadDirectory = "photos";
                 const extension = path.extname(file.originalname);
                 if (!allowedExtensions.includes(extension)) {
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                            chalk.bgRed("Error:") +
+                            " Image Upload Fail (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                    );
                     return callback(new Error("wrong extension"));
                 }
                 console.log(

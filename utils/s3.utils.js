@@ -17,6 +17,7 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
+const maxSize = 5 * 1024 * 1024;
 const allowedExtensions = [
     ".png",
     ".jpg",
@@ -34,6 +35,9 @@ const imageUploader = multer({
     storage: multerS3({
         s3: s3,
         bucket: process.env.AWS_BUCKET_NAME,
+        limits: {
+            fileSize: maxSize,
+        },
         key: (req, file, callback) => {
             if (req.header("API-Key") == process.env.API_KEY) {
                 const uploadDirectory = "photos";

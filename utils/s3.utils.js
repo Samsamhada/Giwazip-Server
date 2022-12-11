@@ -35,9 +35,9 @@ const imageUploader = multer({
     storage: multerS3({
         s3: s3,
         bucket: process.env.AWS_BUCKET_NAME,
-        cacheControl: "max-age=5242880",
         limits: {
             fileSize: maxSize,
+            files: 1,
         },
         key: (req, file, callback) => {
             if (req.header("API-Key") == process.env.API_KEY) {

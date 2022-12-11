@@ -42,13 +42,29 @@ const imageUploader = multer({
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgRed("Error:") +
-                            " Image Upload Fail (IP: " +
+                            " Not Allowed Extension (IP: " +
                             (req.header("X-FORWARDED-FOR") ||
                                 req.socket.remoteAddress) +
                             ")"
                     );
                     return callback(new Error("wrong extension"));
                 }
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Request:") +
+                        `${req} (IP: ` +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("File:") +
+                        `${file} (IP: ` +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +

@@ -59,6 +59,7 @@ require("./routes/user.routes")(app);
 require("./routes/worker.routes")(app);
 require("./routes/room.routes")(app);
 require("./routes/userroom.routes")(app);
+require("./routes/category.routes")(app);
 require("./routes/post.routes")(app);
 require("./routes/photo.routes")(app);
 // require("./routes/auth.routes")(app);

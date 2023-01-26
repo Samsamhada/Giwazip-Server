@@ -19,12 +19,12 @@ const s3 = new AWS.S3();
 
 const allowedExtensions = [
     ".png",
-    ".jpg",
-    ".jpeg",
-    ".bmp",
     ".PNG",
+    ".jpg",
     ".JPG",
+    ".jpeg",
     ".JPEG",
+    ".bmp",
     ".BMP",
     ".heic",
     ".HEIC",

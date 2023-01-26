@@ -55,13 +55,13 @@ db.sequelize
 //     }
 // });
 
-require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/worker.routes")(app);
 require("./routes/room.routes")(app);
 require("./routes/status.routes")(app);
 require("./routes/post.routes")(app);
 require("./routes/photo.routes")(app);
+// require("./routes/auth.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

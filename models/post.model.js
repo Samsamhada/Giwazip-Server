@@ -14,10 +14,15 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "room_id",
             },
-            category: {
+            userID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "category",
+                field: "user_id",
+            },
+            categoryID: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                field: "category_id",
             },
             type: {
                 type: Sequelize.INTEGER,

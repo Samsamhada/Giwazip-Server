@@ -9,20 +9,6 @@ module.exports = (sequelize, Sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            // workerID: {
-            //     type: Sequelize.INTEGER,
-            //     allowNull: false,
-            //     field: "worker_id",
-            // },
-            // clientName: {
-            //     type: Sequelize.STRING,
-            //     allowNull: false,
-            //     field: "client_name",
-            // },
-            // clientNumber: {
-            //     type: Sequelize.STRING,
-            //     field: "client_number",
-            // },
             name: {
                 type: Sequelize.STRING,
                 allowNull: false,
@@ -59,21 +45,6 @@ module.exports = (sequelize, Sequelize) => {
             tableName: "room",
         }
     );
-
-    // Room.associate = (models) => {
-    //     Room.belongsTo(models.Worker, {
-    //         foreignKey: "workerID",
-    //         sourceKey: "workerID",
-    //     });
-    //     Room.hasMany(models.Status, {
-    //         foreignKey: "roomID",
-    //         sourceKey: "roomID",
-    //     });
-    //     Room.hasMany(models.Post, {
-    //         foreignKey: "roomID",
-    //         sourceKey: "roomID",
-    //     });
-    // };
 
     return Room;
 };

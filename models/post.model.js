@@ -24,11 +24,6 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "category_id",
             },
-            // type: {
-            //     type: Sequelize.INTEGER,
-            //     allowNull: false,
-            //     field: "type",
-            // },
             description: {
                 type: Sequelize.STRING,
                 defaultValue: "",
@@ -48,17 +43,6 @@ module.exports = (sequelize, Sequelize) => {
             tableName: "post",
         }
     );
-
-    // Post.associate = (models) => {
-    //     Post.belongsTo(models.Room, {
-    //         foreignKey: "roomID",
-    //         sourceKey: "roomID",
-    //     });
-    //     Post.hasMany(models.Photo, {
-    //         foreignKey: "postID",
-    //         sourceKey: "postID",
-    //     });
-    // };
 
     return Post;
 };

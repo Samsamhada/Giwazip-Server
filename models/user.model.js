@@ -27,12 +27,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    // Worker.associate = (models) => {
-    //     Worker.hasMany(models.Room, {
-    //         foreignKey: "workerID",
-    //         sourceKey: "workerID",
-    //     });
-    // };
-
     return User;
 };

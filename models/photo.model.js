@@ -19,11 +19,6 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "url",
             },
-            // photoPath: {
-            //     type: Sequelize.STRING,
-            //     allowNull: false,
-            //     field: "photo_path",
-            // },
         },
         {
             timestamps: false,
@@ -31,13 +26,6 @@ module.exports = (sequelize, Sequelize) => {
             tableName: "photo",
         }
     );
-
-    // Photo.associate = (models) => {
-    //     Photo.belongsTo(models.Post, {
-    //         foreignKey: "postID",
-    //         sourceKey: "postID",
-    //     });
-    // };
 
     return Photo;
 };

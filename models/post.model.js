@@ -24,11 +24,11 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "category_id",
             },
-            type: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                field: "type",
-            },
+            // type: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            //     field: "type",
+            // },
             description: {
                 type: Sequelize.STRING,
                 defaultValue: "",

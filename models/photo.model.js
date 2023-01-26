@@ -14,11 +14,16 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "post_id",
             },
-            photoPath: {
+            url: {
                 type: Sequelize.STRING,
                 allowNull: false,
-                field: "photo_path",
+                field: "url",
             },
+            // photoPath: {
+            //     type: Sequelize.STRING,
+            //     allowNull: false,
+            //     field: "photo_path",
+            // },
         },
         {
             timestamps: false,

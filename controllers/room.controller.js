@@ -79,7 +79,6 @@ exports.create = (req, res) => {
 
         // Create a Room
         const room = {
-            workerID: req.body.workerID,
             name: req.body.name,
             startDate: startDate,
             endDate: endDate,

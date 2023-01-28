@@ -9,19 +9,24 @@ module.exports = (sequelize, Sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            workerID: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                field: "worker_id",
-            },
-            clientName: {
+            // workerID: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            //     field: "worker_id",
+            // },
+            // clientName: {
+            //     type: Sequelize.STRING,
+            //     allowNull: false,
+            //     field: "client_name",
+            // },
+            // clientNumber: {
+            //     type: Sequelize.STRING,
+            //     field: "client_number",
+            // },
+            name: {
                 type: Sequelize.STRING,
                 allowNull: false,
-                field: "client_name",
-            },
-            clientNumber: {
-                type: Sequelize.STRING,
-                field: "client_number",
+                field: "name",
             },
             startDate: {
                 type: Sequelize.DATE,
@@ -37,6 +42,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             warrantyTime: {
                 type: Sequelize.INTEGER,
+                defaultValue: 12,
                 allowNull: false,
                 field: "warranty_time",
             },

@@ -2,13 +2,19 @@ module.exports = (sequelize, Sequelize) => {
     const Worker = sequelize.define(
         "worker",
         {
-            workerID: {
+            userID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "worker_id",
+                field: "user_id",
                 primaryKey: true,
-                autoIncrement: true,
             },
+            // workerID: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            //     field: "worker_id",
+            //     primaryKey: true,
+            //     autoIncrement: true,
+            // },
             userIdentifier: {
                 type: Sequelize.STRING,
                 allowNull: false,
@@ -25,10 +31,10 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "email",
             },
-            number: {
-                type: Sequelize.STRING,
-                field: "number",
-            },
+            // number: {
+            //     type: Sequelize.STRING,
+            //     field: "number",
+            // },
         },
         {
             timestamps: false,

@@ -14,16 +14,21 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "room_id",
             },
-            category: {
+            userID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "category",
+                field: "user_id",
             },
-            type: {
+            categoryID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "type",
+                field: "category_id",
             },
+            // type: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            //     field: "type",
+            // },
             description: {
                 type: Sequelize.STRING,
                 defaultValue: "",

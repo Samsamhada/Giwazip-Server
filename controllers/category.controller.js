@@ -1,29 +1,29 @@
 const db = require("../models");
-const Photo = db.photos;
+const Category = db.categories;
 const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
-const moment = require("moment");
 const chalk = require("chalk");
+const moment = require("moment");
 
 dotenv.config();
 
 const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
-    if (req.header("API-Key") == apiKey) {
+    if (req.header("API-Key")) {
         // Validate request
 
-        let postID = req.body.postID;
-        let url = req.file.location;
+        let roomID = req.body.roomID;
+        let name = req.body.name;
 
-        if (!postID || !url) {
+        if (!roomID || !name) {
             res.status(400).send({
-                message: "Photo 테이블의 필수 정보가 누락 되었습니다!",
+                message: "Category 테이블의 필수 정보가 누락 되었습니다!",
             });
             console.log(
                 `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                     chalk.bgRed("Error:") +
-                    " Photo 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: " +
+                    " Category 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: " +
                     (req.header("X-FORWARDED-FOR") ||
                         req.socket.remoteAddress) +
                     ")"
@@ -32,18 +32,19 @@ exports.create = (req, res) => {
         }
 
         // Create a Status
-        const photo = {
-            postID: postID,
-            url: url,
+        const category = {
+            roomID: roomID,
+            name: name,
+            progress: 0,
         };
 
-        Photo.create(photo)
+        Category.create(category)
             .then((data) => {
                 res.send(data);
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
-                        " Photo 테이블에 새로운 데이터가 성공적으로 추가되었습니다. (IP: " +
+                        " Category 테이블에 새로운 데이터가 성공적으로 추가되었습니다. (IP: " +
                         (req.header("X-FORWARDED-FOR") ||
                             req.socket.remoteAddress) +
                         ")"
@@ -53,14 +54,14 @@ exports.create = (req, res) => {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "새로운 사진을 추가하는 중에 문제가 발생했습니다.",
+                        "새로운 Category를 추가하는 중에 문제가 발생했습니다.",
                 });
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "새로운 Photo를 추가하는 중에 문제가 발생했습니다. (IP: " +
+                        "새로운 Category를 추가하는 중에 문제가 발생했습니다. (IP: " +
                             (req.header("X-FORWARDED-FOR") ||
                                 req.socket.remoteAddress) +
                             ")"
@@ -71,7 +72,7 @@ exports.create = (req, res) => {
         console.log(
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
-                " Connection Fail at POST /photos (IP: " +
+                " Connection Fail at POST /categories (IP: " +
                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
                 ")"
         );

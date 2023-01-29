@@ -33,20 +33,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    // Room.associate = (models) => {
-    //     Room.belongsTo(models.Worker, {
-    //         foreignKey: "workerID",
-    //         sourceKey: "workerID",
-    //     });
-    //     Room.hasMany(models.Status, {
-    //         foreignKey: "roomID",
-    //         sourceKey: "roomID",
-    //     });
-    //     Room.hasMany(models.Post, {
-    //         foreignKey: "roomID",
-    //         sourceKey: "roomID",
-    //     });
-    // };
-
     return Category;
 };

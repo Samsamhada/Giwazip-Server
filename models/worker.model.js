@@ -8,13 +8,6 @@ module.exports = (sequelize, Sequelize) => {
                 field: "user_id",
                 primaryKey: true,
             },
-            // workerID: {
-            //     type: Sequelize.INTEGER,
-            //     allowNull: false,
-            //     field: "worker_id",
-            //     primaryKey: true,
-            //     autoIncrement: true,
-            // },
             userIdentifier: {
                 type: Sequelize.STRING,
                 allowNull: false,
@@ -31,10 +24,6 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "email",
             },
-            // number: {
-            //     type: Sequelize.STRING,
-            //     field: "number",
-            // },
         },
         {
             timestamps: false,
@@ -42,13 +31,6 @@ module.exports = (sequelize, Sequelize) => {
             tableName: "worker",
         }
     );
-
-    // Worker.associate = (models) => {
-    //     Worker.hasMany(models.Room, {
-    //         foreignKey: "workerID",
-    //         sourceKey: "workerID",
-    //     });
-    // };
 
     return Worker;
 };

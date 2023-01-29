@@ -14,14 +14,14 @@ const apiKey = process.env.API_KEY;
 exports.create = (req, res) => {
     if (req.header("API-Key") == apiKey) {
         // Validate request
-        if (
-            !req.body.roomID ||
-            req.body.category < 0 ||
-            req.body.type < 0 ||
-            req.body.type > 1
-        ) {
+
+        let roomID = req.body.roomID;
+        let userID = req.body.userID;
+        let categoryID = req.body.categoryID;
+
+        if (!roomID || !userID || !categoryID) {
             res.status(400).send({
-                message: "Content can not be empty!",
+                message: "게시물의 필수 정보가 누락 되었습니다.",
             });
             console.log(
                 `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
@@ -34,32 +34,11 @@ exports.create = (req, res) => {
             return;
         }
 
-        function stringToDate(str) {
-            let year = str.substr(0, 4);
-            let month = str.substr(5, 2);
-            let day = str.substr(8, 2);
-
-            let hour = str.substr(11, 2);
-            let minute = str.substr(14, 2);
-            let second = str.substr(17, 2);
-            let millisec = str.substr(20, 3);
-
-            return new Date(
-                year,
-                month - 1,
-                day,
-                hour,
-                minute,
-                second,
-                millisec
-            );
-        }
-
         // Create a Status
         const post = {
-            roomID: req.body.roomID,
-            category: req.body.category,
-            type: req.body.type,
+            roomID: roomID,
+            userID: userID,
+            categoryID: categoryID,
             description: req.body.description,
         };
 
@@ -79,14 +58,14 @@ exports.create = (req, res) => {
                 res.status(500).send({
                     message:
                         err.message ||
-                        "Some error occurred while creating the Post.",
+                        "새로운 게시물을 추가하는 중에 문제가 발생했습니다.",
                 });
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
-                        "Some error occurred while creating the Post. (IP: " +
+                        "새로운 Post를 추가하는 중에 문제가 발생했습니다. (IP: " +
                             (req.header("X-FORWARDED-FOR") ||
                                 req.socket.remoteAddress) +
                             ")"
@@ -98,383 +77,6 @@ exports.create = (req, res) => {
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
                 "Connection Fail at POST /posts (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.findAll = (req, res) => {
-    if (req.header("API-Key") == apiKey) {
-        Post.findAll()
-            .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Success:") +
-                        " Post 테이블의 모든 데이터를 성공적으로 조회했습니다. (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Some error occurred while retrieving posts.",
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " " +
-                        err.message ||
-                        "Some error occurred while retrieving posts. (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                " Connection Fail at GET /posts (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.findOne = (req, res) => {
-    const id = req.params.id;
-
-    if (req.header("API-Key") == apiKey) {
-        Post.findByPk(id)
-            .then((data) => {
-                if (data) {
-                    res.send(data);
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgGreen("Success:") +
-                            ` Post 테이블의 ${id}번 데이터를 성공적으로 조회했습니다.` +
-                            " (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                    );
-                } else {
-                    res.status(400).send({
-                        message: `Cannot find Post with id=${id}.`,
-                    });
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgRed("Error:") +
-                            ` Post 테이블에서 ${id}번 데이터를 찾을 수 없습니다.` +
-                            " (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                    );
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message: "Error retrieving Post with id=" + id,
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " Error retrieving Post with id=" +
-                        id +
-                        " (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                ` Connection Fail at GET /posts/${id}` +
-                " (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.findByRoomID = (req, res) => {
-    const id = req.params.id;
-
-    if (req.header("API-Key") == apiKey) {
-        Post.findAll({ where: { roomID: id } })
-            .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Success:") +
-                        ` Post 테이블의 roomID가 ${id}인 모든 데이터를 성공적으로 조회했습니다.` +
-                        " (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Some error occurred while retrieving posts.",
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " " +
-                        err.message ||
-                        "Some error occurred while retrieving posts. (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                `Connection Fail at GET /posts/room/${id}` +
-                " (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.findByRoomIDWithPhoto = (req, res) => {
-    const id = req.params.id;
-
-    if (req.header("API-Key") == apiKey) {
-        Post.findAll({
-            where: { roomID: id },
-            include: [
-                {
-                    model: Photo,
-                    as: "photos",
-                    attributes: ["photoID", "photoPath"],
-                },
-            ],
-        })
-            .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Success:") +
-                        ` Post 테이블의 roomID가 ${id}인 사진을 포함한 모든 데이터를 성공적으로 조회했습니다.` +
-                        " (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Some error occurred while retrieving posts.",
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " " +
-                        err.message ||
-                        "Some error occurred while retrieving posts. (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                `Connection Fail at GET /posts/photo/room/${id}` +
-                " (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.findByCategory = (req, res) => {
-    const category = req.params.category;
-
-    if (req.header("API-Key") == apiKey) {
-        Post.findAll({ where: { category: category } })
-            .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Success:") +
-                        ` Post 테이블의 category가 ${category}인 모든 데이터를 성공적으로 조회했습니다.` +
-                        " (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message:
-                        err.message ||
-                        "Some error occurred while retrieving posts.",
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " " +
-                        err.message ||
-                        "Some error occurred while retrieving posts. (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                ` Connect Fail at GET /posts/category/${category}` +
-                " (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.update = (req, res) => {
-    const id = req.params.id;
-
-    if (req.header("API-Key") == apiKey) {
-        Post.update(req.body, {
-            where: { postID: id },
-        })
-            .then((num) => {
-                if (num == 1) {
-                    res.send({
-                        message: "Post was updated successfully.",
-                    });
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgGreen("Success:") +
-                            " Post 테이블이 성공적으로 수정되었습니다. (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                    );
-                } else {
-                    res.send({
-                        message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty!`,
-                    });
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgRed("Error:") +
-                            ` Post 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, 수정을 원하는 데이터 정보가 없습니다!` +
-                            " (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                    );
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message: "Error updating Post with id=" + id,
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        ` Post 테이블의 ${id}번을 수정하는 데 오류가 발생했습니다.` +
-                        " (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                ` Connection Fail at PUT /posts/${id}` +
-                " (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
-        );
-    }
-};
-
-exports.delete = (req, res) => {
-    const id = req.params.id;
-
-    if (req.header("API-Key") == apiKey) {
-        Post.destroy({
-            where: { postID: id },
-        })
-            .then((num) => {
-                if (num == 1) {
-                    res.send({
-                        message: "Post was deleted successfully!",
-                    });
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgGreen("Success:") +
-                            " Post 테이블에서 해당 데이터가 성공적으로 삭제되었습니다! (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                    );
-                } else {
-                    res.send({
-                        message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
-                    });
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgRed("Error:") +
-                            ` Post 테이블에서 ${id}번 데이터를 삭제할 수 없습니다. Post 테이블에서 해당 데이터를 찾을 수 없습니다.` +
-                            " (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
-                    );
-                }
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message: "Could not delete Post with id=" + id,
-                });
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        ` Post 테이블의 ${id}번 데이터를 삭제할 수 없습니다.` +
-                        " (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-            });
-    } else {
-        res.status(401).send({ message: "Connection Fail" });
-        console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                ` Connection Fail at DELETE /posts/${id}` +
-                " (IP: " +
                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
                 ")"
         );

@@ -51,22 +51,6 @@ const imageUploader = multer({
                 }
                 console.log(
                     `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Request:") +
-                        `${req} (IP: ` +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("File:") +
-                        `${file} (IP: ` +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
-                );
-                console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                         chalk.bgGreen("Success:") +
                         "사진 업로드에 성공했습니다. (IP: " +
                         (req.header("X-FORWARDED-FOR") ||

@@ -4,56 +4,53 @@ const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
 const moment = require("moment");
 const chalk = require("chalk");
+const purple = chalk.hex("#9900ff");
 
 dotenv.config();
 
 const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
+    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+
     if (req.header("API-Key") == apiKey) {
         // Create a User
         const user = {
             isWorker: req.body.isWorker,
             number: req.body.number,
         };
-
         User.create(user)
             .then((data) => {
                 res.send(data);
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Success:") +
-                        " User 테이블에 새로운 데이터가 성공적으로 추가되었습니다. (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
+                    `[${moment().format(
+                        "YYYY-MM-DD HH:mm:ss.SSS"
+                    )}] 🟢${chalk.green("Success:")} ${chalk.magenta(
+                        "User 테이블"
+                    )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message:
-                        err.message ||
-                        "새로운 User를 추가하는 중에 문제가 발생했습니다.",
+                    message: "새로운 User를 추가하는 중에 문제가 발생했습니다.",
+                    detail: err.message,
                 });
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " " +
-                        err.message ||
-                        "새로운 유저를 추가하는 중에 문제가 발생했습니다. (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🟣${purple(
+                        "Error:"
+                    )} 새로운 ${chalk.yellow(
+                        "User"
+                    )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "detail: " + err.message
+                    )} (IP: ${IP})`
                 );
             });
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                chalk.bgRed("Error:") +
-                " Connection Fail at POST /users (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
-                ")"
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🔴${chalk.red(
+                "Error:"
+            )} Connection Fail at POST /users (IP: ${IP})`
         );
     }
 };
@@ -151,6 +148,67 @@ exports.findOne = (req, res) => {
                 " (IP: " +
                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
                 ")"
+        );
+    }
+};
+
+exports.update = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+
+    if (req.header("API-Key") == apiKey) {
+        User.update(req.body, {
+            where: { userID: id },
+            returning: true,
+        })
+            .then((data) => {
+                if (data[0] == 1) {
+                    res.send(data[1][0]);
+                    console.log(
+                        `[${moment().format(
+                            "YYYY-MM-DD HH:mm:ss.SSS"
+                        )}] 🟢${chalk.green("Success:")} ${chalk.yellow(
+                            "User 테이블"
+                        )}의 ${chalk.yellow(
+                            id + "번"
+                        )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.send({
+                        message: `User 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            "YYYY-MM-DD HH:mm:ss.SSS"
+                        )}] 🔴${chalk.red("Error:")} ${chalk.yellow(
+                            "User 테이블"
+                        )}의 ${chalk.yellow(
+                            id + "번"
+                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `User 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🟣${purple(
+                        "Error:"
+                    )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
+                        id + "번"
+                    )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🔴${chalk.red(
+                "Error:"
+            )} Connection Fail at PUT /users/${id} (IP: ${IP})`
         );
     }
 };

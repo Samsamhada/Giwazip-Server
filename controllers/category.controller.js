@@ -22,7 +22,7 @@ exports.create = (req, res) => {
             });
             console.log(
                 `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                    chalk.bgRed("Error:") +
+                    `🔴 ${chalk.red("Error:")}` +
                     " Category 테이블의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: " +
                     (req.header("X-FORWARDED-FOR") ||
                         req.socket.remoteAddress) +

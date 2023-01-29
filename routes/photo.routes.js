@@ -9,5 +9,7 @@ module.exports = (app) => {
 
     router.get("/", photos.findAll);
 
+    router.get("/:id", photos.findOne);
+
     app.use("/giwazip/photos", router);
 };

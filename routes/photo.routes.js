@@ -7,5 +7,7 @@ module.exports = (app) => {
 
     router.post("/", imageUploader.single("photo"), photos.create);
 
+    router.get("/", photos.findAll);
+
     app.use("/giwazip/photos", router);
 };

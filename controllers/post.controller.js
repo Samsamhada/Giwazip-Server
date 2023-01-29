@@ -85,7 +85,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     if (req.header("API-Key") == apiKey) {
-        Post.findAll()
+        Post.findAll({ order: [["postID", "ASC"]] })
             .then((data) => {
                 res.send(data);
                 console.log(

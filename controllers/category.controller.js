@@ -81,7 +81,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     if (req.header("API-Key") == apiKey) {
-        Category.findAll()
+        Category.findAll({ order: [["categoryID", "ASC"]] })
             .then((data) => {
                 res.send(data);
                 console.log(

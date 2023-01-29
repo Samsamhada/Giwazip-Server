@@ -80,7 +80,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     if (req.header("API-Key") == apiKey) {
-        UserRoom.findAll()
+        UserRoom.findAll({ order: [["userRoomID", "ASC"]] })
             .then((data) => {
                 res.send(data);
                 console.log(

@@ -84,7 +84,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     if (req.header("API-Key") == apiKey) {
-        Worker.findAll()
+        Worker.findAll({ order: [["userID", "ASC"]] })
             .then((data) => {
                 res.send(data);
                 console.log(

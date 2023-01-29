@@ -60,7 +60,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     if (req.header("API-Key") == apiKey) {
-        User.findAll()
+        User.findAll({ order: [["userID", "ASC"]] })
             .then((data) => {
                 res.send(data);
                 console.log(

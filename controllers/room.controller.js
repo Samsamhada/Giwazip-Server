@@ -129,7 +129,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     if (req.header("API-Key") == apiKey) {
-        Room.findAll()
+        Room.findAll({ order: [["roomID", "ASC"]] })
             .then((data) => {
                 res.send(data);
                 console.log(

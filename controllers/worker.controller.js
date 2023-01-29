@@ -81,3 +81,46 @@ exports.create = (req, res) => {
         );
     }
 };
+
+exports.findAll = (req, res) => {
+    if (req.header("API-Key") == apiKey) {
+        Worker.findAll()
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgGreen("Success:") +
+                        " Worker 테이블의 모든 데이터를 성공적으로 조회했습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message:
+                        err.message ||
+                        "Worker 테이블을 조회하는 중에 문제가 발생했습니다.",
+                });
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.bgRed("Error:") +
+                        " " +
+                        err.message ||
+                        "Worker 테이블을 조회하는 중에 문제가 발생했습니다. (IP: " +
+                            (req.header("X-FORWARDED-FOR") ||
+                                req.socket.remoteAddress) +
+                            ")"
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                " Connection Fail at GET /workers (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
+        );
+    }
+};

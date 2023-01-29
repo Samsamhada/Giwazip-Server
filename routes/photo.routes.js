@@ -11,5 +11,7 @@ module.exports = (app) => {
 
     router.get("/:id", photos.findOne);
 
+    router.put("/:id", photos.update);
+
     app.use("/giwazip/photos", router);
 };

@@ -21,6 +21,7 @@ module.exports = (app) => {
 
     router.get("/worker-room", users.findAllWithWorkerAndRoom);
 
+    router.get("/worker-room/:id", users.findOneWithWorkerAndRoom);
 
     app.use("/giwazip/users", router);
 };

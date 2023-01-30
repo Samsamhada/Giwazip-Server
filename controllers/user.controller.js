@@ -232,3 +232,74 @@ exports.findAllRoom = (req, res) => {
         );
     }
 };
+
+exports.findAllRoomWithWorker = (req, res) => {
+    if (req.header("API-Key") == apiKey) {
+        User.findAll({
+            order: [["userID", "ASC"]],
+            include: [
+                {
+                    model: Worker,
+                    as: "worker",
+                    attributes: ["userIdentifier", "name", "email"],
+                },
+                {
+                    model: UserRoom,
+                    as: "userrooms",
+                    attributes: ["roomID"],
+                    order: [["roomID", "ASC"]],
+                    include: [
+                        {
+                            model: Room,
+                            as: "room",
+                            attributes: [
+                                "name",
+                                "startDate",
+                                "endDate",
+                                "warrantyTime",
+                                "inviteCode",
+                            ],
+                        },
+                    ],
+                },
+            ],
+        })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format(
+                        "YYYY-MM-DD HH:mm:ss.SSS"
+                    )}] ${chalk.green("Success: ")} ${chalk.bold(
+                        "User + Worker + Room 테이블"
+                    )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${
+                        req.header("X-FORWARDED-FOR") ||
+                        req.socket.remoteAddress
+                    })`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message:
+                        err.message ||
+                        "User + Worker + Room 테이블을 조회하는 중에 문제가 발생했습니다.",
+                });
+                console.log(
+                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        chalk.red("Error: ") +
+                        " User + Worker + Room 테이블을 조회하는 중에 문제가 발생했습니다. (IP: " +
+                        (req.header("X-FORWARDED-FOR") ||
+                            req.socket.remoteAddress) +
+                        ")"
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.red("Error: ") +
+                " Connection Fail at GET /users/worker-and-room (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
+        );
+    }
+};

@@ -15,7 +15,7 @@ module.exports = (app) => {
 
     router.get("/worker/:id", users.findOneWithWorker);
 
-    router.get("/room", users.findAllRoom);
+    router.get("/room", users.findAllWithRoom);
 
     router.get("/worker-and-room", users.findAllRoomWithWorker);
 

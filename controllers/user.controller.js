@@ -302,6 +302,7 @@ exports.findOneWithRoom = (req, res) => {
     }
 };
 
+exports.findAllWithWorkerAndRoom = (req, res) => {
     if (req.header("API-Key") == apiKey) {
         User.findAll({
             order: [["userID", "ASC"]],

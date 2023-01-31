@@ -18,8 +18,6 @@ exports.create = (req, res) => {
     const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
 
     if (req.header("API-Key") == apiKey) {
-        // Validate request
-
         let userID = req.body.userID;
         let userIdentifier = req.body.userIdentifier;
         let name = req.body.name;
@@ -39,7 +37,6 @@ exports.create = (req, res) => {
             return;
         }
 
-        // Create a Worker
         const worker = {
             userID: userID,
             userIdentifier: userIdentifier,

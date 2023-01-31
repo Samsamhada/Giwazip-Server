@@ -18,7 +18,6 @@ exports.create = (req, res) => {
     const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
 
     if (req.header("API-Key") == apiKey) {
-        // Validate request
         if (!req.body.name) {
             res.status(400).send({
                 message: "시공하려는 고객의 별칭이 포함되지 않았습니다!",
@@ -83,7 +82,6 @@ exports.create = (req, res) => {
             endDate = stringToDate(endDate);
         }
 
-        // Create a Room
         const room = {
             name: req.body.name,
             startDate: startDate,

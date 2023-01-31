@@ -82,12 +82,11 @@ exports.update = (req, res) => {
     if (req.header("API-Key") == apiKey) {
         Category.update(req.body, {
             where: { categoryID: id },
+            returning: true,
         })
-            .then((num) => {
-                if (num == 1) {
-                    res.send({
-                        message: `Category 테이블의 ${id}번 데이터가 성공적으로 수정되었습니다.`,
-                    });
+            .then((data) => {
+                if (data[0] == 1) {
+                    res.send(data[1][0]);
                     console.log(
                         `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                             chalk.bgGreen("Success:") +

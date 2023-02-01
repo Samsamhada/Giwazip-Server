@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const moment = require("moment");
 const chalk = require("chalk");
 const purple = chalk.hex("#9900ff");
+const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 
 dotenv.config();
 
@@ -23,9 +24,9 @@ exports.create = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    `[${moment().format(
-                        "YYYY-MM-DD HH:mm:ss.SSS"
-                    )}] 🟢${chalk.green("Success:")} ${chalk.yellow(
+                    `[${moment().format(dateFormat)}] 🟢${chalk.green(
+                        "Success:"
+                    )} ${chalk.yellow(
                         "User 테이블"
                     )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );
@@ -36,7 +37,7 @@ exports.create = (req, res) => {
                     detail: err.message,
                 });
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🟣${purple(
+                    `[${moment().format(dateFormat)}] 🟣${purple(
                         "Error:"
                     )} 새로운 ${chalk.yellow(
                         "User"
@@ -48,7 +49,7 @@ exports.create = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🔴${chalk.red(
+            `[${moment().format(dateFormat)}] 🔴${chalk.red(
                 "Error:"
             )} Connection Fail at POST /users (IP: ${IP})`
         );
@@ -61,7 +62,7 @@ exports.findAll = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                    `[${moment().format(dateFormat)}] ` +
                         chalk.bgGreen("Success:") +
                         " User 테이블의 모든 데이터를 성공적으로 조회했습니다. (IP: " +
                         (req.header("X-FORWARDED-FOR") ||
@@ -76,7 +77,7 @@ exports.findAll = (req, res) => {
                         "User 테이블을 조회하는 중에 문제가 발생했습니다.",
                 });
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                    `[${moment().format(dateFormat)}] ` +
                         chalk.bgRed("Error:") +
                         " " +
                         err.message ||
@@ -89,7 +90,7 @@ exports.findAll = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+            `[${moment().format(dateFormat)}] ` +
                 chalk.bgRed("Error:") +
                 " Connection Fail at GET /users (IP: " +
                 (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
@@ -107,7 +108,7 @@ exports.findOne = (req, res) => {
                 if (data) {
                     res.send(data);
                     console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        `[${moment().format(dateFormat)}] ` +
                             chalk.bgGreen("Success:") +
                             ` User 테이블의 id=${id}번 데이터를 성공적으로 조회했습니다. (IP: ` +
                             (req.header("X-FORWARDED-FOR") ||
@@ -119,7 +120,7 @@ exports.findOne = (req, res) => {
                         message: `User 테이블에서 id=${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                        `[${moment().format(dateFormat)}] ` +
                             chalk.bgRed("Error:") +
                             ` User 테이블에서 id=${id}번 데이터를 찾을 수 없습니다.` +
                             " (IP: " +
@@ -134,7 +135,7 @@ exports.findOne = (req, res) => {
                     message: `User 테이블의 id=${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                 });
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                    `[${moment().format(dateFormat)}] ` +
                         chalk.bgRed("Error:") +
                         ` User 테이블의 id=${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`
                 );
@@ -142,7 +143,7 @@ exports.findOne = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+            `[${moment().format(dateFormat)}] ` +
                 chalk.bgRed("Error: ") +
                 ` Connection Fail at GET /users/${id}` +
                 " (IP: " +
@@ -165,11 +166,9 @@ exports.update = (req, res) => {
                 if (data[0] == 1) {
                     res.send(data[1][0]);
                     console.log(
-                        `[${moment().format(
-                            "YYYY-MM-DD HH:mm:ss.SSS"
-                        )}] 🟢${chalk.green("Success:")} ${chalk.yellow(
-                            "User 테이블"
-                        )}의 ${chalk.yellow(
+                        `[${moment().format(dateFormat)}] 🟢${chalk.green(
+                            "Success:"
+                        )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
                             id + "번"
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
@@ -178,11 +177,9 @@ exports.update = (req, res) => {
                         message: `User 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
                     });
                     console.log(
-                        `[${moment().format(
-                            "YYYY-MM-DD HH:mm:ss.SSS"
-                        )}] 🔴${chalk.red("Error:")} ${chalk.yellow(
-                            "User 테이블"
-                        )}의 ${chalk.yellow(
+                        `[${moment().format(dateFormat)}] 🔴${chalk.red(
+                            "Error:"
+                        )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
                             id + "번"
                         )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
                     );
@@ -194,7 +191,7 @@ exports.update = (req, res) => {
                     detail: err.message,
                 });
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🟣${purple(
+                    `[${moment().format(dateFormat)}] 🟣${purple(
                         "Error:"
                     )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
                         id + "번"
@@ -206,7 +203,7 @@ exports.update = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] 🔴${chalk.red(
+            `[${moment().format(dateFormat)}] 🔴${chalk.red(
                 "Error:"
             )} Connection Fail at PUT /users/${id} (IP: ${IP})`
         );

@@ -9,5 +9,7 @@ module.exports = (app) => {
 
     router.get("/:id", userrooms.findOne);
 
+    router.put("/:id", userrooms.update);
+
     app.use("/giwazip/user-rooms", router);
 };

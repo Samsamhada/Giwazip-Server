@@ -6,6 +6,9 @@ const moment = require("moment");
 const chalk = require("chalk");
 const purple = chalk.hex("#9900ff");
 const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
+const success = `🟢${chalk.green("Success:")}`;
+const badAccessError = `🔴${chalk.red("Error:")}`;
+const unknownError = `🟣${purple("Error:")}`;
 
 dotenv.config();
 
@@ -24,9 +27,7 @@ exports.create = (req, res) => {
             .then((data) => {
                 res.send(data);
                 console.log(
-                    `[${moment().format(dateFormat)}] 🟢${chalk.green(
-                        "Success:"
-                    )} ${chalk.yellow(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         "User 테이블"
                     )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );
@@ -37,9 +38,9 @@ exports.create = (req, res) => {
                     detail: err.message,
                 });
                 console.log(
-                    `[${moment().format(dateFormat)}] 🟣${purple(
-                        "Error:"
-                    )} 새로운 ${chalk.yellow(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} 새로운 ${chalk.yellow(
                         "User"
                     )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "detail: " + err.message
@@ -49,9 +50,9 @@ exports.create = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format(dateFormat)}] 🔴${chalk.red(
-                "Error:"
-            )} Connection Fail at POST /users (IP: ${IP})`
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at POST /users (IP: ${IP})`
         );
     }
 };
@@ -166,9 +167,11 @@ exports.update = (req, res) => {
                 if (data[0] == 1) {
                     res.send(data[1][0]);
                     console.log(
-                        `[${moment().format(dateFormat)}] 🟢${chalk.green(
-                            "Success:"
-                        )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            "User 테이블"
+                        )}의 ${chalk.yellow(
                             id + "번"
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
@@ -177,9 +180,11 @@ exports.update = (req, res) => {
                         message: `User 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
                     });
                     console.log(
-                        `[${moment().format(dateFormat)}] 🔴${chalk.red(
-                            "Error:"
-                        )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            "User 테이블"
+                        )}의 ${chalk.yellow(
                             id + "번"
                         )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
                     );
@@ -191,9 +196,11 @@ exports.update = (req, res) => {
                     detail: err.message,
                 });
                 console.log(
-                    `[${moment().format(dateFormat)}] 🟣${purple(
-                        "Error:"
-                    )} ${chalk.yellow("User 테이블")}의 ${chalk.yellow(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        "User 테이블"
+                    )}의 ${chalk.yellow(
                         id + "번"
                     )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "상세정보: " + err.message
@@ -203,9 +210,9 @@ exports.update = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format(dateFormat)}] 🔴${chalk.red(
-                "Error:"
-            )} Connection Fail at PUT /users/${id} (IP: ${IP})`
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at PUT /users/${id} (IP: ${IP})`
         );
     }
 };

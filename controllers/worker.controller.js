@@ -228,11 +228,11 @@ exports.update = (req, res) => {
     } else {
         res.status(401).send({ message: "Connection Fail" });
         console.log(
-            `[${moment().format(dateFormat)}] 🔴${chalk.red(
-                "Error:"
-            )} Connection Fail at ${chalk.yellow(
-                "PUT /workers/" + id
-            )} (IP: ${IP})`
+            `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
+                chalk.bgRed("Error:") +
+                " Connection Fail at POST /workers (IP: " +
+                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                ")"
         );
     }
 };

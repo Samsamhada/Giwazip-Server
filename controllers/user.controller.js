@@ -25,7 +25,7 @@ exports.create = (req, res) => {
                 console.log(
                     `[${moment().format(
                         "YYYY-MM-DD HH:mm:ss.SSS"
-                    )}] 🟢${chalk.green("Success:")} ${chalk.magenta(
+                    )}] 🟢${chalk.green("Success:")} ${chalk.yellow(
                         "User 테이블"
                     )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );

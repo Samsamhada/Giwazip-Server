@@ -18,8 +18,6 @@ exports.create = (req, res) => {
     const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
 
     if (req.header("API-Key") == apiKey) {
-        // Validate request
-
         let userID = req.body.userID;
         let roomID = req.body.roomID;
 
@@ -37,7 +35,6 @@ exports.create = (req, res) => {
             return;
         }
 
-        // Create a User
         const userroom = {
             userID: userID,
             roomID: roomID,

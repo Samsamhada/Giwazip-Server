@@ -77,6 +77,109 @@ exports.create = (req, res) => {
     }
 };
 
+exports.findAll = (req, res) => {
+    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+
+    if (req.header("API-Key") == apiKey) {
+        Photo.findAll({ order: [["photoID", "ASC"]] })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        "Photo 테이블"
+                    )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message:
+                        "Photo 테이블을 조회하는 중에 문제가 발생했습니다.",
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        "Photo 테이블"
+                    )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "GET /photos"
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.findOne = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+
+    if (req.header("API-Key") == apiKey) {
+        Photo.findByPk(id)
+            .then((data) => {
+                if (data) {
+                    res.send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            "Photo 테이블"
+                        )}의 ${chalk.yellow(
+                            id + "번"
+                        )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(400).send({
+                        message: `Photo 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            "Photo 테이블"
+                        )}에서 ${chalk.yellow(
+                            id + "번"
+                        )} 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `Photo 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        "Photo 테이블"
+                    )}의 ${chalk.yellow(
+                        id + "번"
+                    )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "GET /photos/" + id
+            )} (IP: ${IP})`
+        );
+    }
+};
+
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;

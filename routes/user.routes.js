@@ -6,8 +6,9 @@ module.exports = (app) => {
     router.post("/", users.create);
 
     router.get("/", users.findAll);
-
     router.get("/:id", users.findOne);
+    router.get("/room", users.findAllWithRoom);
+    router.get("/room/:id", users.findOneWithRoom);
 
     router.put("/:id", users.update);
 

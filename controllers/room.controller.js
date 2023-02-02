@@ -355,6 +355,82 @@ exports.findOneWithPost = (req, res) => {
     }
 };
 
+exports.findOneWithCategoryAndPost = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+
+    if (req.header("API-Key") == apiKey) {
+        Room.findAll({
+            where: { roomID: id },
+            order: [["roomID", "ASC"]],
+            include: [
+                {
+                    model: Category,
+                    as: "categories",
+                    attributes: ["categoryID", "name", "progress"],
+                    order: [["categoryID", "ASC"]],
+                    include: [
+                        {
+                            model: Post,
+                            as: "posts",
+                            attributes: [
+                                "postID",
+                                "userID",
+                                "description",
+                                "createDate",
+                            ],
+                            order: [["postID", "ASC"]],
+                            include: [
+                                {
+                                    model: Photo,
+                                    as: "photos",
+                                    attributes: ["photoID", "url"],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        "Room + Category + Post + Photo 테이블"
+                    )}의 ${chalk.yellow(
+                        "roomID=" + id
+                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `Room + Category + Post + Photo 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        "Room + Category + Post + Photo 테이블"
+                    )}의 ${chalk.yellow(
+                        "roomID=" + id
+                    )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "GET /rooms/category-post/" + id
+            )} (IP: ${IP})`
+        );
+    }
+};
+
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;

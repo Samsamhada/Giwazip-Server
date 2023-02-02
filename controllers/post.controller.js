@@ -94,25 +94,34 @@ exports.findAll = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Post.findAll({ order: [["postID", asc]] })
+        Post.findAll({
+            order: [["postID", asc]],
+            include: [
+                {
+                    model: Photo,
+                    as: "photos",
+                    attributes: ["photoID", "url"],
+                },
+            ],
+        })
             .then((data) => {
                 res.send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${postLabel} 테이블`
+                        `${postLabel} + ${photoLabel} 테이블`
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${postLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${postLabel} + ${photoLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${postLabel} 테이블`
+                        `${postLabel} + ${photoLabel} 테이블`
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`

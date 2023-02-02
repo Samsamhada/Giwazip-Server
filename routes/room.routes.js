@@ -11,6 +11,7 @@ module.exports = (app) => {
     router.get("/post/:id", rooms.findOneWithPost);
     router.get("/category-post/:id", rooms.findOneWithCategoryAndPost);
     router.get("/post-category/:id", rooms.findOneWithPostAndCategory);
+    router.get("/user/:id", rooms.findOneWithUser);
 
     router.put("/:id", rooms.update);
 

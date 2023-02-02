@@ -3,6 +3,9 @@ const Room = db.rooms;
 const Category = db.categories;
 const Post = db.posts;
 const Photo = db.photos;
+const UserRoom = db.userrooms;
+const User = db.users;
+const Worker = db.workers;
 const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
 const chalk = require("chalk");
@@ -500,6 +503,81 @@ exports.findOneWithPostAndCategory = (req, res) => {
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 "GET /rooms/post-category/" + id
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.findOneWithUser = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+
+    if (req.header("API-Key") == apiKey) {
+        Room.findAll({
+            where: { roomID: id },
+            order: [["roomID", "ASC"]],
+            include: [
+                {
+                    model: UserRoom,
+                    as: "userrooms",
+                    attributes: ["userRoomID"],
+                    order: [["userRoomID", "ASC"]],
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: ["userID", "number"],
+                            order: [["userID", "ASC"]],
+                            include: [
+                                {
+                                    model: Worker,
+                                    as: "worker",
+                                    attributes: [
+                                        "userIdentifier",
+                                        "name",
+                                        "email",
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        "Room + User-Room + User + Worker 테이블"
+                    )}의 ${chalk.yellow(
+                        "roomID=" + id
+                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `Room + User-Room + User + Worker 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        "Room + User-Room + User + Worker 테이블"
+                    )}의 ${chalk.yellow(
+                        "roomID=" + id
+                    )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "GET /rooms/user/" + id
             )} (IP: ${IP})`
         );
     }

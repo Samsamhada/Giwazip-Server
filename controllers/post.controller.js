@@ -17,9 +17,6 @@ const reqHeaderAPIKeyField = "API-Key";
 const asc = "ASC";
 const userLabel = "User";
 const workerLabel = "Worker";
-const roomLabel = "Room";
-const userroomLabel = "User-Room";
-const categoryLabel = "Category";
 const postLabel = "Post";
 const photoLabel = "Photo";
 

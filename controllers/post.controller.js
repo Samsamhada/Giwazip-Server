@@ -144,44 +144,36 @@ exports.findOne = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Post.findByPk(id)
+        Post.findAll({
+            where: { postID: id },
+            include: [
+                {
+                    model: Photo,
+                    as: "photos",
+                    attributes: ["photoID", "url"],
+                },
+            ],
+        })
             .then((data) => {
-                if (data) {
-                    res.send(data);
-                    console.log(
-                        `[${moment().format(
-                            dateFormat
-                        )}] ${success} ${chalk.yellow(
-                            `${postLabel} 테이블`
-                        )}의 ${chalk.yellow(
-                            `${id}번`
-                        )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                    );
-                } else {
-                    res.status(400).send({
-                        message: `${postLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
-                    });
-                    console.log(
-                        `[${moment().format(
-                            dateFormat
-                        )}] ${badAccessError} ${chalk.yellow(
-                            `${postLabel} 테이블`
-                        )}에서 ${chalk.yellow(
-                            `${id}번`
-                        )} 데이터를 찾을 수 없습니다. (IP: ${IP})`
-                    );
-                }
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${postLabel} + ${photoLabel} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${postLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${postLabel} + ${photoLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${postLabel} 테이블`
+                        `${postLabel} + ${photoLabel} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(

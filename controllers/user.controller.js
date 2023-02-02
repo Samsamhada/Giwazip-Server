@@ -78,21 +78,21 @@ exports.findAll = (req, res) => {
                 res.send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        "User+Worker 테이블"
+                        "User + Worker 테이블"
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
                     message:
-                        "User+Worker 테이블을 조회하는 중에 문제가 발생했습니다.",
+                        "User + Worker 테이블을 조회하는 중에 문제가 발생했습니다.",
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        "User+Worker 테이블"
+                        "User + Worker 테이블"
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "상세정보: " + err.message
                     )} (IP: ${IP})`
@@ -129,7 +129,7 @@ exports.findOne = (req, res) => {
                 res.send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        "User+Worker 테이블"
+                        "User + Worker 테이블"
                     )}의 ${chalk.yellow(
                         id + "번"
                     )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -137,14 +137,14 @@ exports.findOne = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `User+Worker 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `User + Worker 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        "User+Worker 테이블"
+                        "User + Worker 테이블"
                     )}의 ${chalk.yellow(
                         id + "번"
                     )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -201,21 +201,21 @@ exports.findAllWithRoom = (req, res) => {
                 res.send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        "User+Worker+User-Room+Room 테이블"
+                        "User + Worker + User-Room + Room 테이블"
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
                     message:
-                        "User+Worker+User-Room+Room 테이블을 조회하는 중에 문제가 발생했습니다.",
+                        "User + Worker + User-Room + Room 테이블을 조회하는 중에 문제가 발생했습니다.",
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        "User+Worker+User-Room+Room 테이블"
+                        "User + Worker + User-Room + Room 테이블"
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "상세정보: " + err.message
                     )} (IP: ${IP})`
@@ -272,7 +272,7 @@ exports.findOneWithRoom = (req, res) => {
                 res.send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        "User+Worker+User-Room+Room 테이블"
+                        "User + Worker + User-Room + Room 테이블"
                     )}의 ${chalk.yellow(
                         "userID=" + id
                     )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -280,14 +280,14 @@ exports.findOneWithRoom = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `User+Worker+User-Room+Room 테이블의 userID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `User + Worker + User-Room + Room 테이블의 userID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        "User+Worker+User-Room+Room 테이블"
+                        "User + Worker + User-Room + Room 테이블"
                     )}의 ${chalk.yellow(
                         "userID=" + id
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(

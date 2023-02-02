@@ -29,7 +29,6 @@ exports.create = (req, res) => {
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         const user = {
-            isWorker: req.body.isWorker,
             number: req.body.number,
         };
 

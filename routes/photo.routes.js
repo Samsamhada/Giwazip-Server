@@ -8,7 +8,6 @@ module.exports = (app) => {
     router.post("/", imageUploader.single("photo"), photos.create);
 
     router.get("/", photos.findAll);
-
     router.get("/:id", photos.findOne);
 
     router.put("/:id", photos.update);

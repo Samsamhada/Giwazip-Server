@@ -274,7 +274,7 @@ exports.findOneWithCategory = (req, res) => {
                     )}] ${unknownError} ${chalk.yellow(
                         "Room + Category 테이블"
                     )}의 ${chalk.yellow(
-                        "romID=" + id
+                        "roomID=" + id
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "상세정보: " + err.message
                     )} (IP: ${IP})`
@@ -491,7 +491,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        "Room + Post + Category Photo 테이블"
+                        "Room + Post + Category + Photo 테이블"
                     )}의 ${chalk.yellow(
                         "roomID=" + id
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(

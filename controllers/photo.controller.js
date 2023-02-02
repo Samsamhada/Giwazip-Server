@@ -9,15 +9,18 @@ const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
 const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
+const reqHeaderIPField = "X-FORWARDED-FOR";
+const reqHeaderAPIKeyField = "API-Key";
+const asc = "ASC";
 
 dotenv.config();
 
 const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         let postID = req.body.postID;
         let url = req.file.location;
 
@@ -78,10 +81,10 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
-        Photo.findAll({ order: [["photoID", "ASC"]] })
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Photo.findAll({ order: [["photoID", asc]] })
             .then((data) => {
                 res.send(data);
                 console.log(
@@ -120,9 +123,9 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Photo.findByPk(id)
             .then((data) => {
                 if (data) {
@@ -182,9 +185,9 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Photo.update(req.body, {
             where: { photoID: id },
             returning: true,

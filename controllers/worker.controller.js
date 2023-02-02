@@ -9,15 +9,18 @@ const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
+const reqHeaderIPField = "X-FORWARDED-FOR";
+const reqHeaderAPIKeyField = "API-Key";
+const asc = "ASC";
 
 dotenv.config();
 
 const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         let userID = req.body.userID;
         let userIdentifier = req.body.userIdentifier;
         let name = req.body.name;
@@ -82,10 +85,10 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
-        Worker.findAll({ order: [["userID", "ASC"]] })
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Worker.findAll({ order: [["userID", asc]] })
             .then((data) => {
                 res.send(data);
                 console.log(
@@ -124,9 +127,9 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Worker.findByPk(id)
             .then((data) => {
                 if (data) {
@@ -186,9 +189,9 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Worker.update(req.body, {
             where: { userID: id },
             returning: true,
@@ -243,7 +246,7 @@ exports.update = (req, res) => {
             `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
                 chalk.bgRed("Error:") +
                 " Connection Fail at POST /workers (IP: " +
-                (req.header("X-FORWARDED-FOR") || req.socket.remoteAddress) +
+                (req.header(reqHeaderIPField) || req.socket.remoteAddress) +
                 ")"
         );
     }

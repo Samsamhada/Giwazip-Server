@@ -12,6 +12,9 @@ const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
+const reqHeaderIPField = "X-FORWARDED-FOR";
+const reqHeaderAPIKeyField = "API-Key";
+const asc = "ASC";
 
 dotenv.config();
 
@@ -20,7 +23,7 @@ const apiKey = process.env.API_KEY;
 exports.create = (req, res) => {
     const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         const user = {
             isWorker: req.body.isWorker,
             number: req.body.number,
@@ -61,11 +64,11 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findAll({
-            order: [["userID", "ASC"]],
+            order: [["userID", asc]],
             include: [
                 {
                     model: Worker,
@@ -112,9 +115,9 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findAll({
             where: { userID: id },
             include: [
@@ -165,11 +168,11 @@ exports.findOne = (req, res) => {
 };
 
 exports.findAllWithRoom = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findAll({
-            order: [["userID", "ASC"]],
+            order: [["userID", asc]],
             include: [
                 {
                     model: Worker,
@@ -180,7 +183,7 @@ exports.findAllWithRoom = (req, res) => {
                     model: UserRoom,
                     as: "userrooms",
                     attributes: ["roomID"],
-                    order: [["roomID", "ASC"]],
+                    order: [["roomID", asc]],
                     include: [
                         {
                             model: Room,
@@ -235,12 +238,12 @@ exports.findAllWithRoom = (req, res) => {
 
 exports.findOneWithRoom = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findAll({
             where: { userID: id },
-            order: [["userID", "ASC"]],
+            order: [["userID", asc]],
             include: [
                 {
                     model: Worker,
@@ -251,7 +254,7 @@ exports.findOneWithRoom = (req, res) => {
                     model: UserRoom,
                     as: "userrooms",
                     attributes: ["roomID"],
-                    order: [["roomID", "ASC"]],
+                    order: [["roomID", asc]],
                     include: [
                         {
                             model: Room,
@@ -309,9 +312,9 @@ exports.findOneWithRoom = (req, res) => {
 
 exports.update = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.update(req.body, {
             where: { userID: id },
             returning: true,

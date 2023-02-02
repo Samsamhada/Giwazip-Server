@@ -9,15 +9,18 @@ const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
 const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
+const reqHeaderIPField = "X-FORWARDED-FOR";
+const reqHeaderAPIKeyField = "API-Key";
+const asc = "ASC";
 
 dotenv.config();
 
 const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key")) {
+    if (req.header(reqHeaderAPIKeyField)) {
         let roomID = req.body.roomID;
         let name = req.body.name;
 
@@ -79,10 +82,10 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
-        Category.findAll({ order: [["categoryID", "ASC"]] })
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Category.findAll({ order: [["categoryID", asc]] })
             .then((data) => {
                 res.send(data);
                 console.log(
@@ -121,9 +124,9 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Category.findByPk(id)
             .then((data) => {
                 if (data) {
@@ -183,9 +186,9 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
     const id = req.params.id;
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header("API-Key") == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Category.update(req.body, {
             where: { categoryID: id },
             returning: true,

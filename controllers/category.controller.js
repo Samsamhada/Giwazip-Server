@@ -1,5 +1,7 @@
 const db = require("../models");
 const Category = db.categories;
+const Post = db.posts;
+const Photo = db.photos;
 const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
 const chalk = require("chalk");
@@ -12,10 +14,6 @@ const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 const reqHeaderIPField = "X-FORWARDED-FOR";
 const reqHeaderAPIKeyField = "API-Key";
 const asc = "ASC";
-const userLabel = "User";
-const workerLabel = "Worker";
-const roomLabel = "Room";
-const userroomLabel = "User-Room";
 const categoryLabel = "Category";
 const postLabel = "Post";
 const photoLabel = "Photo";
@@ -184,6 +182,75 @@ exports.findOne = (req, res) => {
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 `GET /categories/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.findOneWithPost = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Category.findAll({
+            where: { categoryID: id },
+            order: [["categoryID", asc]],
+            include: [
+                {
+                    model: Post,
+                    as: "posts",
+                    attributes: [
+                        "postID",
+                        "userID",
+                        "categoryID",
+                        "description",
+                        "createDate",
+                    ],
+                    order: [["postID", asc]],
+                    include: [
+                        {
+                            model: Photo,
+                            as: "photos",
+                            attributes: ["photoID", "url"],
+                        },
+                    ],
+                },
+            ],
+        })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                    )}의 ${chalk.yellow(
+                        `categoryID=${id}`
+                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${categoryLabel} + ${postLabel} + ${photoLabel} 테이블의 categoryID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                    )}의 ${chalk.yellow(
+                        `categoryID=${id}`
+                    )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                `GET /categories/post/${id}`
             )} (IP: ${IP})`
         );
     }

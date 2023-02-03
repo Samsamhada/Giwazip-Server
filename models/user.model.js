@@ -9,12 +9,6 @@ module.exports = (sequelize, Sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            isWorker: {
-                type: Sequelize.BOOLEAN,
-                defaultValue: true,
-                allowNull: false,
-                field: "is_worker",
-            },
             number: {
                 type: Sequelize.STRING,
                 field: "number",

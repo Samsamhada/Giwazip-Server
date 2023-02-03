@@ -1,6 +1,8 @@
 const db = require("../models");
 const Post = db.posts;
 const Photo = db.photos;
+const User = db.users;
+const Worker = db.workers;
 const Op = db.Sequelize.Op;
 const dotenv = require("dotenv");
 const chalk = require("chalk");
@@ -15,9 +17,6 @@ const reqHeaderAPIKeyField = "API-Key";
 const asc = "ASC";
 const userLabel = "User";
 const workerLabel = "Worker";
-const roomLabel = "Room";
-const userroomLabel = "User-Room";
-const categoryLabel = "Category";
 const postLabel = "Post";
 const photoLabel = "Photo";
 
@@ -94,25 +93,34 @@ exports.findAll = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Post.findAll({ order: [["postID", asc]] })
+        Post.findAll({
+            order: [["postID", asc]],
+            include: [
+                {
+                    model: Photo,
+                    as: "photos",
+                    attributes: ["photoID", "url"],
+                },
+            ],
+        })
             .then((data) => {
                 res.send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${postLabel} 테이블`
+                        `${postLabel} + ${photoLabel} 테이블`
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${postLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${postLabel} + ${photoLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${postLabel} 테이블`
+                        `${postLabel} + ${photoLabel} 테이블`
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
@@ -135,44 +143,36 @@ exports.findOne = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Post.findByPk(id)
+        Post.findAll({
+            where: { postID: id },
+            include: [
+                {
+                    model: Photo,
+                    as: "photos",
+                    attributes: ["photoID", "url"],
+                },
+            ],
+        })
             .then((data) => {
-                if (data) {
-                    res.send(data);
-                    console.log(
-                        `[${moment().format(
-                            dateFormat
-                        )}] ${success} ${chalk.yellow(
-                            `${postLabel} 테이블`
-                        )}의 ${chalk.yellow(
-                            `${id}번`
-                        )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                    );
-                } else {
-                    res.status(400).send({
-                        message: `${postLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
-                    });
-                    console.log(
-                        `[${moment().format(
-                            dateFormat
-                        )}] ${badAccessError} ${chalk.yellow(
-                            `${postLabel} 테이블`
-                        )}에서 ${chalk.yellow(
-                            `${id}번`
-                        )} 데이터를 찾을 수 없습니다. (IP: ${IP})`
-                    );
-                }
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${postLabel} + ${photoLabel} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${postLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${postLabel} + ${photoLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${postLabel} 테이블`
+                        `${postLabel} + ${photoLabel} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -187,6 +187,81 @@ exports.findOne = (req, res) => {
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 `GET /posts/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.findOneWithUser = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Post.findAll({
+            where: { postID: id },
+            attributes: [
+                "postID",
+                "roomID",
+                "categoryID",
+                "description",
+                "createDate",
+            ],
+            order: [["postID", asc]],
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["userID", "number"],
+                    order: [["userID", asc]],
+                    include: [
+                        {
+                            model: Worker,
+                            as: "worker",
+                            attributes: ["userIdentifier", "name", "email"],
+                        },
+                    ],
+                },
+                {
+                    model: Photo,
+                    as: "photos",
+                    attributes: ["photoID", "url"],
+                },
+            ],
+        })
+            .then((data) => {
+                res.send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${postLabel} + ${userLabel} + ${workerLabel} + ${photoLabel} 테이블`
+                    )}의 ${chalk.yellow(
+                        `postID=${id}`
+                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${postLabel} + ${userLabel} + ${workerLabel} + ${photoLabel} 테이블의 postID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${postLabel} + ${userLabel} + ${workerLabel} + ${photoLabel} 테이블`
+                    )}의 ${chalk.yellow(
+                        `postID=${id}`
+                    )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(401).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                `GET /posts/user/${id}`
             )} (IP: ${IP})`
         );
     }

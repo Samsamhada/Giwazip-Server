@@ -192,7 +192,7 @@ exports.findOneWithPost = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Category.findAll({
+        Category.findOne({
             where: { categoryID: id },
             order: [["categoryID", asc]],
             include: [

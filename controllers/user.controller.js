@@ -122,7 +122,7 @@ exports.findOne = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        User.findAll({
+        User.findOne({
             where: { userID: id },
             include: [
                 {
@@ -176,7 +176,7 @@ exports.findOneWithRoom = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        User.findAll({
+        User.findOne({
             where: { userID: id },
             order: [["userID", asc]],
             include: [

@@ -249,7 +249,7 @@ exports.findOneWithCategory = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Room.findAll({
+        Room.findOne({
             where: { roomID: id },
             order: [["roomID", asc]],
             include: [
@@ -304,7 +304,7 @@ exports.findOneWithPost = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Room.findAll({
+        Room.findOne({
             where: { roomID: id },
             order: [["roomID", asc]],
             include: [
@@ -373,7 +373,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Room.findAll({
+        Room.findOne({
             where: { roomID: id },
             order: [["roomID", asc]],
             include: [
@@ -449,7 +449,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Room.findAll({
+        Room.findOne({
             where: { roomID: id },
             order: [["roomID", asc]],
             include: [
@@ -523,7 +523,7 @@ exports.findOneWithUser = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Room.findAll({
+        Room.findOne({
             where: { roomID: id },
             order: [["roomID", asc]],
             include: [

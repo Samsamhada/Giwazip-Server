@@ -143,7 +143,7 @@ exports.findOne = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Post.findAll({
+        Post.findOne({
             where: { postID: id },
             include: [
                 {
@@ -197,7 +197,7 @@ exports.findOneWithUser = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Post.findAll({
+        Post.findOne({
             where: { postID: id },
             attributes: [
                 "postID",

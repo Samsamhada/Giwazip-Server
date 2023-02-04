@@ -50,7 +50,7 @@ exports.create = (req, res) => {
 
         Worker.create(worker)
             .then((data) => {
-                res.status(200).send();
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${workerLabel} 테이블`

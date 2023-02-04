@@ -145,7 +145,7 @@ exports.findOne = (req, res) => {
                     );
                 } else {
                     res.status(400).send({
-                        message: `${userLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                        message: `${workerLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(

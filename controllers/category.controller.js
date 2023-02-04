@@ -288,7 +288,7 @@ exports.update = (req, res) => {
                             `${categoryLabel} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
             })

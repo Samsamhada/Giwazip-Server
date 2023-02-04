@@ -57,7 +57,7 @@ exports.create = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -106,7 +106,7 @@ exports.findAll = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -160,7 +160,7 @@ exports.findOne = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -234,7 +234,7 @@ exports.findOneWithRoom = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -299,7 +299,7 @@ exports.update = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat

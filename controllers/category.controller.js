@@ -74,7 +74,7 @@ exports.create = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -114,7 +114,7 @@ exports.findAll = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -144,7 +144,7 @@ exports.findOne = (req, res) => {
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(400).send({
+                    res.status(404).send({
                         message: `${categoryLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
@@ -176,7 +176,7 @@ exports.findOne = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -245,7 +245,7 @@ exports.findOneWithPost = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -308,7 +308,7 @@ exports.update = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat

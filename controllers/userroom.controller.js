@@ -185,6 +185,8 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const userID = req.body.userID;
+    const roomID = req.body.roomID;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         UserRoom.update(req.body, {
@@ -203,9 +205,9 @@ exports.update = (req, res) => {
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
-                } else {
-                    res.send({
-                        message: `U${userroomLabel} 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
+                } else if (!userID && !roomID) {
+                    res.status(400).send({
+                        message: `U${userroomLabel} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
@@ -214,7 +216,20 @@ exports.update = (req, res) => {
                             `${userroomLabel} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${userroomLabel} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${userroomLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
             })

@@ -12,7 +12,6 @@ const unknownError = `🟣${purple("Error:")}`;
 const reqHeaderIPField = "X-FORWARDED-FOR";
 const reqHeaderAPIKeyField = "API-Key";
 const asc = "ASC";
-const userLabel = "User";
 const workerLabel = "Worker";
 
 dotenv.config();

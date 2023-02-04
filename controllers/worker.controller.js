@@ -206,7 +206,9 @@ exports.update = (req, res) => {
                     `${workerLabel} 테이블`
                 )}의 ${chalk.yellow(
                     `${id}번`
-                )} 데이터의 userID를 ${userID}로 변경할 수 없습니다. (IP: ${IP})`
+                )} 데이터의 userID를 ${chalk.yellow(
+                    userID
+                )}로 변경할 수 없습니다. (IP: ${IP})`
             );
             return;
         }

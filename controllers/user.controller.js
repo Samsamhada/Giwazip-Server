@@ -34,7 +34,7 @@ exports.create = (req, res) => {
 
         User.create(user)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${userLabel} 테이블`
@@ -83,7 +83,7 @@ exports.findAll = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${userLabel} + ${workerLabel} 테이블`
@@ -256,7 +256,7 @@ exports.update = (req, res) => {
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.send(data[1][0]);
+                    res.status(200).send(data[1][0]);
                     console.log(
                         `[${moment().format(
                             dateFormat

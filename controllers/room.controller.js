@@ -108,7 +108,7 @@ exports.create = (req, res) => {
 
         Room.create(room)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${roomLabel} 테이블`
@@ -148,7 +148,7 @@ exports.findAll = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findAll({ order: [["roomID", asc]] })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${roomLabel} 테이블`
@@ -190,7 +190,7 @@ exports.findOne = (req, res) => {
         Room.findByPk(id)
             .then((data) => {
                 if (data) {
-                    res.send(data);
+                    res.status(200).send(data);
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -604,7 +604,7 @@ exports.update = (req, res) => {
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.send(data[1][0]);
+                    res.status(200).send(data[1][0]);
                     console.log(
                         `[${moment().format(
                             dateFormat

@@ -46,7 +46,7 @@ exports.create = (req, res) => {
 
         Photo.create(photo)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${photoLabel} 테이블`
@@ -86,7 +86,7 @@ exports.findAll = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Photo.findAll({ order: [["photoID", asc]] })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${photoLabel} 테이블`
@@ -128,7 +128,7 @@ exports.findOne = (req, res) => {
         Photo.findByPk(id)
             .then((data) => {
                 if (data) {
-                    res.send(data);
+                    res.status(200).send(data);
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -193,7 +193,7 @@ exports.update = (req, res) => {
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.send(data[1][0]);
+                    res.status(200).send(data[1][0]);
                     console.log(
                         `[${moment().format(
                             dateFormat

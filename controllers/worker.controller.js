@@ -190,8 +190,25 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const userID = req.body.userID;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        if (userID) {
+            res.status(400).send({
+                message: `${workerLabel} 테이블의 ${id}번 데이터의 userID를 ${userID}로 변경할 수 없습니다.`,
+            });
+            console.log(
+                `[${moment().format(
+                    dateFormat
+                )}] ${badAccessError} ${chalk.yellow(
+                    `${workerLabel} 테이블`
+                )}의 ${chalk.yellow(
+                    `${id}번`
+                )} 데이터의 userID를 ${userID}로 변경할 수 없습니다. (IP: ${IP})`
+            );
+            return;
+        }
+
         Worker.update(req.body, {
             where: { userID: id },
             returning: true,

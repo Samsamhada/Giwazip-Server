@@ -89,6 +89,7 @@ exports.findAll = (req, res) => {
                         `${userLabel} + ${workerLabel} 테이블`
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
+                console.log(User.name);
             })
             .catch((err) => {
                 res.status(500).send({
@@ -195,7 +196,7 @@ exports.findOneWithRoom = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findOne({
             where: { userID: id },
-            order: [["userID", asc]],
+            order: [[UserRoom, "roomID", asc]],
             include: [
                 {
                     model: Worker,
@@ -206,7 +207,6 @@ exports.findOneWithRoom = (req, res) => {
                     model: UserRoom,
                     as: "userrooms",
                     attributes: ["roomID"],
-                    order: [["roomID", asc]],
                     include: [
                         {
                             model: Room,

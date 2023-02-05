@@ -15,10 +15,6 @@ const unknownError = `🟣${purple("Error:")}`;
 const reqHeaderIPField = "X-FORWARDED-FOR";
 const reqHeaderAPIKeyField = "API-Key";
 const asc = "ASC";
-const userLabel = "User";
-const workerLabel = "Worker";
-const roomLabel = "Room";
-const userroomLabel = "User-Room";
 
 dotenv.config();
 
@@ -37,20 +33,20 @@ exports.create = (req, res) => {
                 res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${userLabel} 테이블`
+                        `${User.name} 테이블`
                     )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `새로운 ${userLabel}를 추가하는 중에 문제가 발생했습니다.`,
+                    message: `새로운 ${User.name}를 추가하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} 새로운 ${chalk.yellow(
-                        userLabel
+                        User.name
                     )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
@@ -77,7 +73,6 @@ exports.findAll = (req, res) => {
             include: [
                 {
                     model: Worker,
-                    as: "worker",
                     attributes: ["userIdentifier", "name", "email"],
                 },
             ],
@@ -86,20 +81,20 @@ exports.findAll = (req, res) => {
                 res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
+                        `${User.name} + ${Worker.name} 테이블`
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} + ${workerLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} 테이블을 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
+                        `${User.name} + ${Worker.name} 테이블`
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
@@ -127,7 +122,6 @@ exports.findOne = (req, res) => {
             include: [
                 {
                     model: Worker,
-                    as: "worker",
                     attributes: ["userIdentifier", "name", "email"],
                 },
             ],
@@ -139,20 +133,20 @@ exports.findOne = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${userLabel} + ${workerLabel} 테이블`
+                            `${User.name} + ${Worker.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${userLabel} + ${workerLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                        message: `${User.name} + ${Worker.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${userLabel} + ${workerLabel} 테이블`
+                            `${User.name} + ${Worker.name} 테이블`
                         )}에서 ${chalk.yellow(
                             `${id}번`
                         )} 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -161,14 +155,14 @@ exports.findOne = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} + ${workerLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
+                        `${User.name} + ${Worker.name} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -199,18 +193,15 @@ exports.findOneWithRoom = (req, res) => {
             include: [
                 {
                     model: Worker,
-                    as: "worker",
                     attributes: ["userIdentifier", "name", "email"],
                 },
                 {
                     model: UserRoom,
-                    as: "userrooms",
                     attributes: ["roomID"],
                     order: [["roomID", asc]],
                     include: [
                         {
                             model: Room,
-                            as: "room",
                             attributes: [
                                 "name",
                                 "startDate",
@@ -230,20 +221,20 @@ exports.findOneWithRoom = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블`
+                            `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블`
                         )}의 ${chalk.yellow(
                             `userID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블에서 userID=${id}인 데이터를 찾을 수 없습니다.`,
+                        message: `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블에서 userID=${id}인 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블`
+                            `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블`
                         )}의 ${chalk.yellow(
                             `userID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -252,14 +243,14 @@ exports.findOneWithRoom = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블의 userID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블의 userID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블`
+                        `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블`
                     )}의 ${chalk.yellow(
                         `userID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -296,33 +287,33 @@ exports.update = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${userLabel} 테이블`
+                            `${User.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
                 } else if (!number) {
                     res.status(400).send({
-                        message: `${userLabel} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
+                        message: `${User.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${userLabel} 테이블`
+                            `${User.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${userLabel} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
+                        message: `${User.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${userLabel} 테이블`
+                            `${User.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -331,14 +322,14 @@ exports.update = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} 테이블`
+                        `${User.name} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(

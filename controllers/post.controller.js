@@ -166,11 +166,13 @@ exports.findOne = (req, res) => {
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Post.name} + ${Photo.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
-                        )}] ${success} ${chalk.yellow(
+                        )}] ${badAccessError} ${chalk.yellow(
                             `${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
@@ -258,11 +260,13 @@ exports.findOneWithUser = (req, res) => {
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Post.name} + ${User.name} + ${Worker.name} + ${Photo.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
-                        )}] ${success} ${chalk.yellow(
+                        )}] ${badAccessError} ${chalk.yellow(
                             `${Post.name} + ${User.name} + ${Worker.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `postID=${id}`

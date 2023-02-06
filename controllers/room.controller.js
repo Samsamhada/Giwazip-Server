@@ -352,7 +352,9 @@ exports.findOneWithPost = (req, res) => {
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Room.name} + ${Post.name} + ${Photo.name} 테이블의 roomID=${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -619,14 +621,16 @@ exports.findOneWithUser = (req, res) => {
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
-                        )}] ${success} ${chalk.yellow(
+                        )}] ${badAccessError} ${chalk.yellow(
                             `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블`
                         )}의 ${chalk.yellow(
-                            `roomID=${id}`
+                            `postID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }

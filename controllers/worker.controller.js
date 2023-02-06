@@ -50,7 +50,7 @@ exports.create = (req, res) => {
 
         Worker.create(worker)
             .then((data) => {
-                res.status(200).send();
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${workerLabel} 테이블`
@@ -231,7 +231,7 @@ exports.update = (req, res) => {
                     );
                 } else if (!userIdentifier && !name && !email) {
                     res.status(400).send({
-                        message: `${workerLabel} 테이블의 ${id}번 데이터를 수정할 수 없습니다. request의 body가 비어있습니다.`,
+                        message: `${workerLabel} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
@@ -240,11 +240,11 @@ exports.update = (req, res) => {
                             `${workerLabel} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. request의 body가 비어있습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${workerLabel} 테이블의 ${id}번 데이터를 찾을 수 없습니다.`,
+                        message: `${workerLabel} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
@@ -253,7 +253,7 @@ exports.update = (req, res) => {
                             `${workerLabel} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
             })

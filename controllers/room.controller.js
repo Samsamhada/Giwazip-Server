@@ -108,7 +108,7 @@ exports.create = (req, res) => {
 
         Room.create(room)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${roomLabel} 테이블`
@@ -131,7 +131,7 @@ exports.create = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -148,7 +148,7 @@ exports.findAll = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findAll({ order: [["roomID", asc]] })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${roomLabel} 테이블`
@@ -171,7 +171,7 @@ exports.findAll = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -190,7 +190,7 @@ exports.findOne = (req, res) => {
         Room.findByPk(id)
             .then((data) => {
                 if (data) {
-                    res.send(data);
+                    res.status(200).send(data);
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -201,7 +201,7 @@ exports.findOne = (req, res) => {
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(400).send({
+                    res.status(404).send({
                         message: `${roomLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
@@ -233,7 +233,7 @@ exports.findOne = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -261,14 +261,31 @@ exports.findOneWithCategory = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} + ${categoryLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `roomID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${roomLabel} + ${categoryLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${roomLabel} + ${categoryLabel} 테이블에서 roomID=${id}인 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${roomLabel} + ${categoryLabel} 테이블`
+                        )}에서 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
@@ -288,7 +305,7 @@ exports.findOneWithCategory = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -330,14 +347,29 @@ exports.findOneWithPost = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} + ${postLabel} + ${photoLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `roomID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${roomLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${roomLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
@@ -357,7 +389,7 @@ exports.findOneWithPost = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -406,14 +438,29 @@ exports.findOneWithCategoryAndPost = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `roomID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
@@ -433,7 +480,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -480,14 +527,29 @@ exports.findOneWithPostAndCategory = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `roomID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
@@ -507,7 +569,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -555,14 +617,29 @@ exports.findOneWithUser = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `roomID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `roomID=${id}`
+                        )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
@@ -582,7 +659,7 @@ exports.findOneWithUser = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -596,15 +673,38 @@ exports.findOneWithUser = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const name = req.body.name;
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    const warrantyTime = req.body.warrantyTime;
+    const inviteCode = req.body.inviteCode;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        if (inviteCode) {
+            res.status(400).send({
+                message: `${roomLabel} 테이블의 ${id}번 데이터의 inviteCode를 ${inviteCode}로 변경할 수 없습니다.`,
+            });
+            console.log(
+                `[${moment().format(
+                    dateFormat
+                )}] ${badAccessError} ${chalk.yellow(
+                    `${roomLabel} 테이블`
+                )}의 ${chalk.yellow(
+                    `${id}번`
+                )} 데이터의 inviteCode를 ${chalk.yellow(
+                    inviteCode
+                )}로 변경할 수 없습니다. (IP: ${IP})`
+            );
+            return;
+        }
+
         Room.update(req.body, {
             where: { roomID: id },
             returning: true,
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.send(data[1][0]);
+                    res.status(200).send(data[1][0]);
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -614,9 +714,9 @@ exports.update = (req, res) => {
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
-                } else {
-                    res.send({
-                        message: `${roomLabel} 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
+                } else if (!name && !startDate && !endDate && !warrantyTime) {
+                    res.status(400).send({
+                        message: `${roomLabel} 테이블의 ${id}번 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
@@ -625,7 +725,20 @@ exports.update = (req, res) => {
                             `${roomLabel} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${roomLabel} 테이블의 ${id}번 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${roomLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
             })
@@ -647,7 +760,7 @@ exports.update = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat

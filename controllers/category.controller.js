@@ -51,7 +51,7 @@ exports.create = (req, res) => {
 
         Category.create(category)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${categoryLabel} 테이블`
@@ -74,7 +74,7 @@ exports.create = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -91,7 +91,7 @@ exports.findAll = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Category.findAll({ order: [["categoryID", asc]] })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${categoryLabel} 테이블`
@@ -114,7 +114,7 @@ exports.findAll = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -133,7 +133,7 @@ exports.findOne = (req, res) => {
         Category.findByPk(id)
             .then((data) => {
                 if (data) {
-                    res.send(data);
+                    res.status(200).send(data);
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -144,7 +144,7 @@ exports.findOne = (req, res) => {
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(400).send({
+                    res.status(404).send({
                         message: `${categoryLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
@@ -176,7 +176,7 @@ exports.findOne = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -218,14 +218,29 @@ exports.findOneWithPost = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `categoryID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `categoryID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `categoryID=${id}`
+                        )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
@@ -245,7 +260,7 @@ exports.findOneWithPost = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -259,6 +274,9 @@ exports.findOneWithPost = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const roomID = req.body.roomID;
+    const name = req.body.name;
+    const progress = req.body.progress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Category.update(req.body, {
@@ -267,7 +285,7 @@ exports.update = (req, res) => {
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.send(data[1][0]);
+                    res.status(200).send(data[1][0]);
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -277,9 +295,9 @@ exports.update = (req, res) => {
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
-                } else {
-                    res.send({
-                        message: `${categoryLabel} 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
+                } else if (!roomID && !name && !progress) {
+                    res.status(400).send({
+                        message: `${categoryLabel} 테이블의 ${id}번 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
@@ -288,7 +306,20 @@ exports.update = (req, res) => {
                             `${categoryLabel} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${categoryLabel} 테이블의 ${id}번 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없있습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${categoryLabel} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
             })
@@ -308,7 +339,7 @@ exports.update = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat

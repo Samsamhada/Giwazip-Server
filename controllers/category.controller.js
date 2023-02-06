@@ -191,10 +191,11 @@ exports.findOneWithPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Category.findOne({
             where: { categoryID: id },
-            order: [[Post, "postID", asc]],
+            order: [["posts", "postID", asc]],
             include: [
                 {
                     model: Post,
+                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
@@ -202,10 +203,11 @@ exports.findOneWithPost = (req, res) => {
                         "description",
                         "createDate",
                     ],
-                    order: [[Photo, "photoID", asc]],
+                    order: [["photos", "photoID", asc]],
                     include: [
                         {
                             model: Photo,
+                            as: "photos",
                             attributes: ["photoID", "url"],
                         },
                     ],

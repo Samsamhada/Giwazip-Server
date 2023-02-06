@@ -73,6 +73,7 @@ exports.findAll = (req, res) => {
             include: [
                 {
                     model: Worker,
+                    as: "worker",
                     attributes: ["userIdentifier", "name", "email"],
                 },
             ],
@@ -122,6 +123,7 @@ exports.findOne = (req, res) => {
             include: [
                 {
                     model: Worker,
+                    as: "worker",
                     attributes: ["userIdentifier", "name", "email"],
                 },
             ],
@@ -189,18 +191,21 @@ exports.findOneWithRoom = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findOne({
             where: { userID: id },
-            order: [[UserRoom, "roomID", asc]],
+            order: [["userrooms", "roomID", asc]],
             include: [
                 {
                     model: Worker,
+                    as: "worker",
                     attributes: ["userIdentifier", "name", "email"],
                 },
                 {
                     model: UserRoom,
+                    as: "userrooms",
                     attributes: ["roomID"],
                     include: [
                         {
                             model: Room,
+                            as: "room",
                             attributes: [
                                 "name",
                                 "startDate",

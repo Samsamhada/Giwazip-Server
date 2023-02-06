@@ -244,10 +244,11 @@ exports.findOneWithCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Category, "categoryID", asc]],
+            order: [["categories", "categoryID", asc]],
             include: [
                 {
                     model: Category,
+                    as: "categories",
                     attributes: ["categoryID", "name", "progress"],
                 },
             ],
@@ -315,10 +316,11 @@ exports.findOneWithPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Post, "postID", asc]],
+            order: [["posts", "postID", asc]],
             include: [
                 {
                     model: Post,
+                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
@@ -326,10 +328,11 @@ exports.findOneWithPost = (req, res) => {
                         "description",
                         "createDate",
                     ],
-                    order: [[Photo, "photoID", asc]],
+                    order: [["photos", "photoID", asc]],
                     include: [
                         {
                             model: Photo,
+                            as: "photos",
                             attributes: ["photoID", "url"],
                         },
                     ],
@@ -397,25 +400,28 @@ exports.findOneWithCategoryAndPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Category, "categoryID", asc]],
+            order: [["categories", "categoryID", asc]],
             include: [
                 {
                     model: Category,
+                    as: "categories",
                     attributes: ["categoryID", "name", "progress"],
-                    order: [[Post, "postID", asc]],
+                    order: [["posts", "postID", asc]],
                     include: [
                         {
                             model: Post,
+                            as: "posts",
                             attributes: [
                                 "postID",
                                 "userID",
                                 "description",
                                 "createDate",
                             ],
-                            order: [[Photo, "photoID", asc]],
+                            order: [["photos", "photoID", asc]],
                             include: [
                                 {
                                     model: Photo,
+                                    as: "photos",
                                     attributes: ["photoID", "url"],
                                 },
                             ],
@@ -485,24 +491,27 @@ exports.findOneWithPostAndCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Post, "postID", asc]],
+            order: [["posts", "postID", asc]],
             include: [
                 {
                     model: Post,
+                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
                         "description",
                         "createDate",
                     ],
-                    order: [[Photo, "photoID", asc]],
+                    order: [["photos", "photoID", asc]],
                     include: [
                         {
                             model: Category,
+                            as: "category",
                             attributes: ["categoryID", "name"],
                         },
                         {
                             model: Photo,
+                            as: "photos",
                             attributes: ["photoID", "url"],
                         },
                     ],
@@ -570,18 +579,21 @@ exports.findOneWithUser = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[UserRoom, "userID", asc]],
+            order: [["userrooms", "userID", asc]],
             include: [
                 {
                     model: UserRoom,
+                    as: "userrooms",
                     attributes: ["userID"],
                     include: [
                         {
                             model: User,
+                            as: "user",
                             attributes: ["number"],
                             include: [
                                 {
                                     model: Worker,
+                                    as: "worker",
                                     attributes: [
                                         "userIdentifier",
                                         "name",

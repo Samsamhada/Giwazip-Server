@@ -92,11 +92,12 @@ exports.findAll = (req, res) => {
         Post.findAll({
             order: [
                 ["postID", asc],
-                [Photo, "photoID", asc],
+                ["photos", "photoID", asc],
             ],
             include: [
                 {
                     model: Photo,
+                    as: "photos",
                     attributes: ["photoID", "url"],
                 },
             ],
@@ -143,10 +144,11 @@ exports.findOne = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Post.findOne({
             where: { postID: id },
-            order: [[Photo, "photoID", asc]],
+            order: [["photos", "photoID", asc]],
             include: [
                 {
                     model: Photo,
+                    as: "photos",
                     attributes: ["photoID", "url"],
                 },
             ],
@@ -220,12 +222,13 @@ exports.findOneWithUser = (req, res) => {
                 "createDate",
             ],
             order: [
-                [User, "userID", asc],
-                [Photo, "photoID", asc],
+                ["user", "userID", asc],
+                ["photos", "photoID", asc],
             ],
             include: [
                 {
                     model: User,
+                    as: "user",
                     attributes: ["userID", "number"],
                     include: [
                         {
@@ -237,6 +240,7 @@ exports.findOneWithUser = (req, res) => {
                 },
                 {
                     model: Photo,
+                    as: "photos",
                     attributes: ["photoID", "url"],
                 },
             ],

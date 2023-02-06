@@ -16,15 +16,8 @@ const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
 const reqHeaderIPField = "X-FORWARDED-FOR";
-const reqHeaderAPIKeyField = "API-Key";
+const reqHeaderAPIKeyField = "x-api-key";
 const asc = "ASC";
-const userLabel = "User";
-const workerLabel = "Worker";
-const roomLabel = "Room";
-const userroomLabel = "User-Room";
-const categoryLabel = "Category";
-const postLabel = "Post";
-const photoLabel = "Photo";
 
 dotenv.config();
 
@@ -42,7 +35,7 @@ exports.create = (req, res) => {
                 `[${moment().format(
                     dateFormat
                 )}] ${badAccessError} ${chalk.yellow(
-                    `${roomLabel} 테이블`
+                    `${Room.name} 테이블`
                 )}의 필수 데이터 name을 포함하지 않고 Create를 시도했습니다. (IP: ${IP})`
             );
             return;
@@ -111,20 +104,20 @@ exports.create = (req, res) => {
                 res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} 테이블`
+                        `${Room.name} 테이블`
                     )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `새로운 ${roomLabel}을 추가하는 중에 문제가 발생했습니다.`,
+                    message: `새로운 ${Room.name}을 추가하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${badAccessError} 새로운 ${chalk.yellow(
-                        roomLabel
+                        Room.name
                     )}을 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "상세정보: " + err.message
                     )} (IP: ${IP})`
@@ -151,20 +144,20 @@ exports.findAll = (req, res) => {
                 res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${roomLabel} 테이블`
+                        `${Room.name} 테이블`
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} 테이블을 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} 테이블`
+                        `${Room.name} 테이블`
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         "상세정보: " + err.message
                     )} (IP: ${IP})`
@@ -195,20 +188,20 @@ exports.findOne = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} 테이블`
+                            `${Room.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${roomLabel} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                        message: `${Room.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} 테이블`
+                            `${Room.name} 테이블`
                         )}에서 ${chalk.yellow(
                             `${id}번`
                         )} 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -217,14 +210,14 @@ exports.findOne = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} 테이블`
+                        `${Room.name} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -251,11 +244,10 @@ exports.findOneWithCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Category, "categoryID", asc]],
             include: [
                 {
                     model: Category,
-                    as: "categories",
                     attributes: ["categoryID", "name", "progress"],
                 },
             ],
@@ -267,20 +259,20 @@ exports.findOneWithCategory = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} + ${categoryLabel} 테이블`
+                            `${Room.name} + ${Category.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${roomLabel} + ${categoryLabel} 테이블에서 roomID=${id}인 데이터를 찾을 수 없습니다.`,
+                        message: `${Room.name} + ${Category.name} 테이블에서 roomID=${id}인 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} + ${categoryLabel} 테이블`
+                            `${Room.name} + ${Category.name} 테이블`
                         )}에서 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -289,14 +281,14 @@ exports.findOneWithCategory = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} + ${categoryLabel} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} + ${Category.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} + ${categoryLabel} 테이블`
+                        `${Room.name} + ${Category.name} 테이블`
                     )}의 ${chalk.yellow(
                         `roomID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -323,11 +315,10 @@ exports.findOneWithPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Post, "postID", asc]],
             include: [
                 {
                     model: Post,
-                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
@@ -335,11 +326,10 @@ exports.findOneWithPost = (req, res) => {
                         "description",
                         "createDate",
                     ],
-                    order: [["postID", asc]],
+                    order: [[Photo, "photoID", asc]],
                     include: [
                         {
                             model: Photo,
-                            as: "photos",
                             attributes: ["photoID", "url"],
                         },
                     ],
@@ -353,7 +343,7 @@ exports.findOneWithPost = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} + ${postLabel} + ${photoLabel} 테이블`
+                            `${Room.name} + ${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -364,7 +354,7 @@ exports.findOneWithPost = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} + ${postLabel} + ${photoLabel} 테이블`
+                            `${Room.name} + ${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -373,14 +363,14 @@ exports.findOneWithPost = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} + ${postLabel} + ${photoLabel} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} + ${Post.name} + ${Photo.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        `${Room.name} + ${Post.name} + ${Photo.name} 테이블`
                     )}의 ${chalk.yellow(
                         `roomID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -407,28 +397,25 @@ exports.findOneWithCategoryAndPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Category, "categoryID", asc]],
             include: [
                 {
                     model: Category,
-                    as: "categories",
                     attributes: ["categoryID", "name", "progress"],
-                    order: [["categoryID", asc]],
+                    order: [[Post, "postID", asc]],
                     include: [
                         {
                             model: Post,
-                            as: "posts",
                             attributes: [
                                 "postID",
                                 "userID",
                                 "description",
                                 "createDate",
                             ],
-                            order: [["postID", asc]],
+                            order: [[Photo, "photoID", asc]],
                             include: [
                                 {
                                     model: Photo,
-                                    as: "photos",
                                     attributes: ["photoID", "url"],
                                 },
                             ],
@@ -444,7 +431,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                            `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -455,7 +442,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                            `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -464,14 +451,14 @@ exports.findOneWithCategoryAndPost = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} + ${categoryLabel} + ${postLabel} + ${photoLabel} 테이블`
+                        `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블`
                     )}의 ${chalk.yellow(
                         `roomID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -498,29 +485,25 @@ exports.findOneWithPostAndCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Post, "postID", asc]],
             include: [
                 {
                     model: Post,
-                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
                         "description",
                         "createDate",
                     ],
-                    order: [["postID", asc]],
+                    order: [[Photo, "photoID", asc]],
                     include: [
                         {
                             model: Category,
-                            as: "category",
                             attributes: ["categoryID", "name"],
                         },
                         {
                             model: Photo,
-                            as: "photos",
                             attributes: ["photoID", "url"],
-                            order: [["photoID", asc]],
                         },
                     ],
                 },
@@ -533,7 +516,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블`
+                            `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -544,7 +527,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블`
+                            `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -553,14 +536,14 @@ exports.findOneWithPostAndCategory = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} + ${postLabel} + ${categoryLabel} + ${photoLabel} 테이블`
+                        `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블`
                     )}의 ${chalk.yellow(
                         `roomID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -587,23 +570,18 @@ exports.findOneWithUser = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[UserRoom, "userID", asc]],
             include: [
                 {
                     model: UserRoom,
-                    as: "userrooms",
-                    attributes: ["userRoomID"],
-                    order: [["userRoomID", asc]],
+                    attributes: ["userID"],
                     include: [
                         {
                             model: User,
-                            as: "user",
-                            attributes: ["userID", "number"],
-                            order: [["userID", asc]],
+                            attributes: ["number"],
                             include: [
                                 {
                                     model: Worker,
-                                    as: "worker",
                                     attributes: [
                                         "userIdentifier",
                                         "name",
@@ -623,7 +601,7 @@ exports.findOneWithUser = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블`
+                            `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -634,7 +612,7 @@ exports.findOneWithUser = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블`
+                            `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -643,14 +621,14 @@ exports.findOneWithUser = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} + ${userroomLabel} + ${userLabel} + ${workerLabel} 테이블`
+                        `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블`
                     )}의 ${chalk.yellow(
                         `roomID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -682,13 +660,13 @@ exports.update = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         if (inviteCode) {
             res.status(400).send({
-                message: `${roomLabel} 테이블의 ${id}번 데이터의 inviteCode를 ${inviteCode}로 변경할 수 없습니다.`,
+                message: `${Room.name} 테이블의 ${id}번 데이터의 inviteCode를 ${inviteCode}로 변경할 수 없습니다.`,
             });
             console.log(
                 `[${moment().format(
                     dateFormat
                 )}] ${badAccessError} ${chalk.yellow(
-                    `${roomLabel} 테이블`
+                    `${Room.name} 테이블`
                 )}의 ${chalk.yellow(
                     `${id}번`
                 )} 데이터의 inviteCode를 ${chalk.yellow(
@@ -709,33 +687,33 @@ exports.update = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${roomLabel} 테이블`
+                            `${Room.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
                 } else if (!name && !startDate && !endDate && !warrantyTime) {
                     res.status(400).send({
-                        message: `${roomLabel} 테이블의 ${id}번 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다.`,
+                        message: `${Room.name} 테이블의 ${id}번 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} 테이블`
+                            `${Room.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터의 수정을 시도했으나, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
                     );
                 } else {
                     res.status(404).send({
-                        message: `${roomLabel} 테이블의 ${id}번 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
+                        message: `${Room.name} 테이블의 ${id}번 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${roomLabel} 테이블`
+                            `${Room.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터의 수정을 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -744,14 +722,14 @@ exports.update = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${roomLabel} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${roomLabel} 테이블`
+                        `${Room.name} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(

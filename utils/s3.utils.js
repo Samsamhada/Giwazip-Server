@@ -7,6 +7,12 @@ const moment = require("moment");
 const dotenv = require("dotenv");
 const chalk = require("chalk");
 
+const reqHeaderIPField = "X-FORWARDED-FOR";
+const reqHeaderAPIKeyField = "x-api-key";
+
+const success = `🟢${chalk.green("Success:")}`;
+const badAccessError = `🔴${chalk.red("Error:")}`;
+
 dotenv.config();
 
 AWS.config.update({
@@ -35,27 +41,25 @@ const imageUploader = multer({
         s3: s3,
         bucket: process.env.AWS_BUCKET_NAME,
         key: (req, file, callback) => {
-            if (req.header("API-Key") == process.env.API_KEY) {
+            const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+            if (req.header(reqHeaderAPIKeyField) == process.env.API_KEY) {
                 const uploadDirectory = "photos";
                 const extension = path.extname(file.originalname);
                 if (!allowedExtensions.includes(extension)) {
                     console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                            chalk.bgRed("Error:") +
-                            " Not Allowed Extension (IP: " +
-                            (req.header("X-FORWARDED-FOR") ||
-                                req.socket.remoteAddress) +
-                            ")"
+                        `[${moment().format(
+                            "YYYY-MM-DD HH:mm:ss.SSS"
+                        )}] ${badAccessError} 허용되지 않은 확장자(${chalk.yellow(
+                            extension
+                        )})로 업로드를 시도했습니다. (IP: ${IP})`
                     );
                     return callback(new Error("wrong extension"));
                 }
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgGreen("Success:") +
-                        "사진 업로드에 성공했습니다. (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
+                    `[${moment().format(
+                        "YYYY-MM-DD HH:mm:ss.SSS"
+                    )}] ${success} 성공적으로 사진을 업로드 했습니다. (IP: ${IP})`
                 );
                 callback(
                     null,
@@ -65,12 +69,9 @@ const imageUploader = multer({
                 );
             } else {
                 console.log(
-                    `[${moment().format("YYYY-MM-DD HH:mm:ss.SSS")}] ` +
-                        chalk.bgRed("Error:") +
-                        " Connection Fail at Image Uploader (IP: " +
-                        (req.header("X-FORWARDED-FOR") ||
-                            req.socket.remoteAddress) +
-                        ")"
+                    `[${moment().format(
+                        "YYYY-MM-DD HH:mm:ss.SSS"
+                    )}] ${badAccessError} Connection Fail at Image Uploader (IP: ${IP})`
                 );
                 return callback(new Error("Connection Fail"));
             }

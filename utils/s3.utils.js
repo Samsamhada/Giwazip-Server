@@ -7,6 +7,7 @@ const moment = require("moment");
 const dotenv = require("dotenv");
 const chalk = require("chalk");
 
+const reqHeaderAPIKeyField = "x-api-key";
 dotenv.config();
 
 AWS.config.update({
@@ -35,7 +36,7 @@ const imageUploader = multer({
         s3: s3,
         bucket: process.env.AWS_BUCKET_NAME,
         key: (req, file, callback) => {
-            if (req.header("API-Key") == process.env.API_KEY) {
+            if (req.header(reqHeaderAPIKeyField) == process.env.API_KEY) {
                 const uploadDirectory = "photos";
                 const extension = path.extname(file.originalname);
                 if (!allowedExtensions.includes(extension)) {

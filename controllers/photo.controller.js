@@ -10,7 +10,7 @@ const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
 const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 const reqHeaderIPField = "X-FORWARDED-FOR";
-const reqHeaderAPIKeyField = "API-Key";
+const reqHeaderAPIKeyField = "x-api-key";
 const asc = "ASC";
 
 dotenv.config();

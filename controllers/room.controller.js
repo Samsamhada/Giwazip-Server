@@ -16,7 +16,7 @@ const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
 const reqHeaderIPField = "X-FORWARDED-FOR";
-const reqHeaderAPIKeyField = "API-Key";
+const reqHeaderAPIKeyField = "x-api-key";
 const asc = "ASC";
 
 dotenv.config();

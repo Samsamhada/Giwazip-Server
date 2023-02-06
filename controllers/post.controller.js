@@ -90,7 +90,10 @@ exports.findAll = (req, res) => {
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Post.findAll({
-            order: [["postID", asc]],
+            order: [
+                ["postID", asc],
+                [Photo, "photoID", asc],
+            ],
             include: [
                 {
                     model: Photo,
@@ -140,6 +143,7 @@ exports.findOne = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Post.findOne({
             where: { postID: id },
+            order: [[Photo, "photoID", asc]],
             include: [
                 {
                     model: Photo,
@@ -215,12 +219,14 @@ exports.findOneWithUser = (req, res) => {
                 "description",
                 "createDate",
             ],
-            order: [["postID", asc]],
+            order: [
+                [User, "userID", asc],
+                [Photo, "photoID", asc],
+            ],
             include: [
                 {
                     model: User,
                     attributes: ["userID", "number"],
-                    order: [["userID", asc]],
                     include: [
                         {
                             model: Worker,

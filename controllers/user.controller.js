@@ -189,7 +189,7 @@ exports.findOneWithRoom = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.findOne({
             where: { userID: id },
-            order: [["userID", asc]],
+            order: [[UserRoom, "roomID", asc]],
             include: [
                 {
                     model: Worker,
@@ -198,7 +198,6 @@ exports.findOneWithRoom = (req, res) => {
                 {
                     model: UserRoom,
                     attributes: ["roomID"],
-                    order: [["roomID", asc]],
                     include: [
                         {
                             model: Room,

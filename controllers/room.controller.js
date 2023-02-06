@@ -244,7 +244,7 @@ exports.findOneWithCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Category, "categoryID", asc]],
             include: [
                 {
                     model: Category,
@@ -315,7 +315,7 @@ exports.findOneWithPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Post, "postID", asc]],
             include: [
                 {
                     model: Post,
@@ -326,7 +326,7 @@ exports.findOneWithPost = (req, res) => {
                         "description",
                         "createDate",
                     ],
-                    order: [["postID", asc]],
+                    order: [[Photo, "photoID", asc]],
                     include: [
                         {
                             model: Photo,
@@ -397,12 +397,12 @@ exports.findOneWithCategoryAndPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Category, "categoryID", asc]],
             include: [
                 {
                     model: Category,
                     attributes: ["categoryID", "name", "progress"],
-                    order: [["categoryID", asc]],
+                    order: [[Post, "postID", asc]],
                     include: [
                         {
                             model: Post,
@@ -412,7 +412,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
                                 "description",
                                 "createDate",
                             ],
-                            order: [["postID", asc]],
+                            order: [[Photo, "photoID", asc]],
                             include: [
                                 {
                                     model: Photo,
@@ -485,7 +485,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[Post, "postID", asc]],
             include: [
                 {
                     model: Post,
@@ -495,7 +495,7 @@ exports.findOneWithPostAndCategory = (req, res) => {
                         "description",
                         "createDate",
                     ],
-                    order: [["postID", asc]],
+                    order: [[Photo, "photoID", asc]],
                     include: [
                         {
                             model: Category,
@@ -504,7 +504,6 @@ exports.findOneWithPostAndCategory = (req, res) => {
                         {
                             model: Photo,
                             attributes: ["photoID", "url"],
-                            order: [["photoID", asc]],
                         },
                     ],
                 },
@@ -571,17 +570,15 @@ exports.findOneWithUser = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["roomID", asc]],
+            order: [[UserRoom, "userID", asc]],
             include: [
                 {
                     model: UserRoom,
-                    attributes: ["userRoomID"],
-                    order: [["userRoomID", asc]],
+                    attributes: ["userID"],
                     include: [
                         {
                             model: User,
-                            attributes: ["userID", "number"],
-                            order: [["userID", asc]],
+                            attributes: ["number"],
                             include: [
                                 {
                                     model: Worker,

@@ -348,3 +348,69 @@ exports.update = (req, res) => {
         );
     }
 };
+
+exports.delete = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Category.destroy({
+            where: { categoryID: id },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    res.status(200).send({
+                        message: `${Category.name} 테이블의 ${id}번 데이터가 성공적으로 삭제되었습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${Category.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터가 성공적으로 삭제되었습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${Category.name} 테이블에서 ${id}번 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Category.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Category.name} 테이블의 ${id}번 데이터를 삭제하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Category.name} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 삭제하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "DELETE /categories/${id}"
+            )} (IP: ${IP})`
+        );
+    }
+};

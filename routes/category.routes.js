@@ -11,5 +11,7 @@ module.exports = (app) => {
 
     router.put("/:id", categories.update);
 
+    router.delete("/:id", categories.delete);
+
     app.use("/giwazip/categories", router);
 };

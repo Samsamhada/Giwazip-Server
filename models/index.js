@@ -69,4 +69,7 @@ db["posts"].belongsTo(db["rooms"], { as: "room", foreignKey: "roomID" });
 db["posts"].hasMany(db["photos"], { as: "photos", foreignKey: "postID" });
 db["photos"].belongsTo(db["posts"], { as: "post", foreignKey: "postID" });
 
+db["admins"].hasMany(db["notices"], { as: "notices", foreignKey: "adminID" });
+db["notices"].belongsTo(db["admins"], { as: "admin", foreignKey: "adminID" });
+
 module.exports = db;

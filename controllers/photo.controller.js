@@ -321,7 +321,7 @@ exports.delete = (req, res) => {
             `[${moment().format(
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "DELETE /photos/${id}"
+                `DELETE /photos/${id}`
             )} (IP: ${IP})`
         );
     }

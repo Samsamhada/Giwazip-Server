@@ -279,7 +279,7 @@ exports.update = (req, res) => {
             `[${moment().format(
                 "YYYY-MM-DD HH:mm:ss.SSS"
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "POST /workers"
+                `POST /workers/${id}`
             )} (IP: ${IP})`
         );
     }
@@ -345,7 +345,7 @@ exports.delete = (req, res) => {
             `[${moment().format(
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "DELETE /workers/${id}"
+                `DELETE /workers/${id}`
             )} (IP: ${IP})`
         );
     }

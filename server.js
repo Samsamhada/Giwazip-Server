@@ -64,6 +64,7 @@ require("./routes/post.routes")(app);
 require("./routes/photo.routes")(app);
 // require("./routes/auth.routes")(app);
 
+require("./routes/admin.routes")(app);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(

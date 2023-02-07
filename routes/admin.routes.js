@@ -8,5 +8,7 @@ module.exports = (app) => {
     router.get("/", admins.findAll);
     router.get("/:id", admins.findOne);
 
+    router.put("/:id", admins.update);
+
     app.use("/giwazip/admins", router);
 };

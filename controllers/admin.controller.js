@@ -184,3 +184,85 @@ exports.findOne = (req, res) => {
     }
 };
 
+exports.update = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const identifier = req.body.id;
+    const pw = req.body.pw;
+    const name = req.body.name;
+    const allowChanging = req.body.allowChanging;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Admin.update(req.body, {
+            where: { adminID: id },
+            returning: true,
+        })
+            .then((data) => {
+                if (data[0] == 1) {
+                    res.status(200).send(data[1][0]);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${Admin.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
+                    );
+                } else if (!identifier && !pw && !name && !allowChanging) {
+                    res.status(400).send({
+                        message: `${Admin.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Admin.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${Admin.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Admin.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Admin.name} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Admin.name} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                "YYYY-MM-DD HH:mm:ss.SSS"
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                `PUT /admins/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+

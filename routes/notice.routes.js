@@ -5,5 +5,6 @@ module.exports = (app) => {
 
     router.post("/", notices.create);
 
+    router.get("/", notices.findAll);
     app.use("/giwazip/notices", router);
 };

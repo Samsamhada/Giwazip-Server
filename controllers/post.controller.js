@@ -92,11 +92,12 @@ exports.findAll = (req, res) => {
         Post.findAll({
             order: [
                 ["postID", asc],
-                [Photo, "photoID", asc],
+                ["photos", "photoID", asc],
             ],
             include: [
                 {
                     model: Photo,
+                    as: "photos",
                     attributes: ["photoID", "url"],
                 },
             ],
@@ -143,10 +144,11 @@ exports.findOne = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Post.findOne({
             where: { postID: id },
-            order: [[Photo, "photoID", asc]],
+            order: [["photos", "photoID", asc]],
             include: [
                 {
                     model: Photo,
+                    as: "photos",
                     attributes: ["photoID", "url"],
                 },
             ],
@@ -164,11 +166,13 @@ exports.findOne = (req, res) => {
                         )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Post.name} + ${Photo.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
-                        )}] ${success} ${chalk.yellow(
+                        )}] ${badAccessError} ${chalk.yellow(
                             `${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
@@ -220,12 +224,13 @@ exports.findOneWithUser = (req, res) => {
                 "createDate",
             ],
             order: [
-                [User, "userID", asc],
-                [Photo, "photoID", asc],
+                ["user", "userID", asc],
+                ["photos", "photoID", asc],
             ],
             include: [
                 {
                     model: User,
+                    as: "user",
                     attributes: ["userID", "number"],
                     include: [
                         {
@@ -237,6 +242,7 @@ exports.findOneWithUser = (req, res) => {
                 },
                 {
                     model: Photo,
+                    as: "photos",
                     attributes: ["photoID", "url"],
                 },
             ],
@@ -254,11 +260,13 @@ exports.findOneWithUser = (req, res) => {
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Post.name} + ${User.name} + ${Worker.name} + ${Photo.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
-                        )}] ${success} ${chalk.yellow(
+                        )}] ${badAccessError} ${chalk.yellow(
                             `${Post.name} + ${User.name} + ${Worker.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `postID=${id}`
@@ -391,6 +399,72 @@ exports.update = (req, res) => {
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 `PUT /posts/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.delete = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Post.destroy({
+            where: { postID: id },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    res.status(200).send({
+                        message: `${Post.name} 테이블의 ${id}번 데이터가 성공적으로 삭제되었습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${Post.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터가 성공적으로 삭제되었습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${Post.name} 테이블에서 ${id}번 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Post.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Post.name} 테이블의 ${id}번 데이터를 삭제하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Post.name} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 삭제하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "DELETE /posts/${id}"
             )} (IP: ${IP})`
         );
     }

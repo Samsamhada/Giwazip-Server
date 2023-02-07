@@ -244,10 +244,11 @@ exports.findOneWithCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Category, "categoryID", asc]],
+            order: [["categories", "categoryID", asc]],
             include: [
                 {
                     model: Category,
+                    as: "categories",
                     attributes: ["categoryID", "name", "progress"],
                 },
             ],
@@ -315,10 +316,11 @@ exports.findOneWithPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Post, "postID", asc]],
+            order: [["posts", "postID", asc]],
             include: [
                 {
                     model: Post,
+                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
@@ -326,10 +328,11 @@ exports.findOneWithPost = (req, res) => {
                         "description",
                         "createDate",
                     ],
-                    order: [[Photo, "photoID", asc]],
+                    order: [["photos", "photoID", asc]],
                     include: [
                         {
                             model: Photo,
+                            as: "photos",
                             attributes: ["photoID", "url"],
                         },
                     ],
@@ -349,7 +352,9 @@ exports.findOneWithPost = (req, res) => {
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Room.name} + ${Post.name} + ${Photo.name} 테이블의 roomID=${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
@@ -397,25 +402,28 @@ exports.findOneWithCategoryAndPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Category, "categoryID", asc]],
+            order: [["categories", "categoryID", asc]],
             include: [
                 {
                     model: Category,
+                    as: "categories",
                     attributes: ["categoryID", "name", "progress"],
-                    order: [[Post, "postID", asc]],
+                    order: [["posts", "postID", asc]],
                     include: [
                         {
                             model: Post,
+                            as: "posts",
                             attributes: [
                                 "postID",
                                 "userID",
                                 "description",
                                 "createDate",
                             ],
-                            order: [[Photo, "photoID", asc]],
+                            order: [["photos", "photoID", asc]],
                             include: [
                                 {
                                     model: Photo,
+                                    as: "photos",
                                     attributes: ["photoID", "url"],
                                 },
                             ],
@@ -485,24 +493,27 @@ exports.findOneWithPostAndCategory = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[Post, "postID", asc]],
+            order: [["posts", "postID", asc]],
             include: [
                 {
                     model: Post,
+                    as: "posts",
                     attributes: [
                         "postID",
                         "userID",
                         "description",
                         "createDate",
                     ],
-                    order: [[Photo, "photoID", asc]],
+                    order: [["photos", "photoID", asc]],
                     include: [
                         {
                             model: Category,
+                            as: "category",
                             attributes: ["categoryID", "name"],
                         },
                         {
                             model: Photo,
+                            as: "photos",
                             attributes: ["photoID", "url"],
                         },
                     ],
@@ -570,18 +581,21 @@ exports.findOneWithUser = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [[UserRoom, "userID", asc]],
+            order: [["userrooms", "userID", asc]],
             include: [
                 {
                     model: UserRoom,
+                    as: "userrooms",
                     attributes: ["userID"],
                     include: [
                         {
                             model: User,
+                            as: "user",
                             attributes: ["number"],
                             include: [
                                 {
                                     model: Worker,
+                                    as: "worker",
                                     attributes: [
                                         "userIdentifier",
                                         "name",
@@ -607,14 +621,16 @@ exports.findOneWithUser = (req, res) => {
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                     );
                 } else {
-                    res.status(404).send(data);
+                    res.status(404).send({
+                        message: `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat
-                        )}] ${success} ${chalk.yellow(
+                        )}] ${badAccessError} ${chalk.yellow(
                             `${Room.name} + ${UserRoom.name} + ${User.name} + ${Worker.name} 테이블`
                         )}의 ${chalk.yellow(
-                            `roomID=${id}`
+                            `postID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
@@ -744,6 +760,72 @@ exports.update = (req, res) => {
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 `PUT /rooms/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.delete = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        Room.destroy({
+            where: { roomID: id },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    res.status(200).send({
+                        message: `${Room.name} 테이블의 ${id}번 데이터가 성공적으로 삭제되었습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${Room.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터가 성공적으로 삭제되었습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${Room.name} 테이블에서 ${id}번 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Room.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Room.name} 테이블의 ${id}번 데이터를 삭제하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Room.name} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 삭제하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "DELETE /rooms/${id}"
             )} (IP: ${IP})`
         );
     }

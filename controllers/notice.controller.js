@@ -210,3 +210,103 @@ exports.findOne = (req, res) => {
     }
 };
 
+exports.update = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const title = req.body.title;
+    const content = req.body.content;
+    const createDate = req.body.createDate;
+    const isHidden = req.body.isHidden;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        if (createDate) {
+            res.status(400).send({
+                message: `${Notice.name} 테이블의 ${id}번 데이터의 createDate를 ${createDate}로 변경할 수 없습니다.`,
+            });
+            console.log(
+                `[${moment().format(
+                    dateFormat
+                )}] ${badAccessError} ${chalk.yellow(
+                    `${Notice.name} 테이블`
+                )}의 ${chalk.yellow(
+                    `${id}번`
+                )} 데이터의 createDate를 ${chalk.yellow(
+                    createDate
+                )}로 변경할 수 없습니다. (IP: ${IP})`
+            );
+            return;
+        }
+
+        Notice.update(req.body, {
+            where: { noticeID: id },
+            returning: true,
+        })
+            .then((data) => {
+                if (data[0] == 1) {
+                    res.status(200).send(data[1][0]);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${Notice.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
+                    );
+                } else if (!title && !content && !isHidden) {
+                    res.status(400).send({
+                        message: `${Notice.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Notice.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${Notice.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${Notice.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Notice.name} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Notice.name} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                "YYYY-MM-DD HH:mm:ss.SSS"
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                `PUT /notices/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+

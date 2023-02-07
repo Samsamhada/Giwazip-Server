@@ -6,5 +6,7 @@ module.exports = (app) => {
     router.post("/", admins.create);
 
     router.get("/", admins.findAll);
+    router.get("/:id", admins.findOne);
+
     app.use("/giwazip/admins", router);
 };

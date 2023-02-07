@@ -27,6 +27,7 @@ db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.posts = require("./post.model.js")(sequelize, Sequelize);
 db.photos = require("./photo.model.js")(sequelize, Sequelize);
 
+db.admins = require("./admin.model.js")(sequelize, Sequelize);
 Object.keys(db).forEach((modelName) => {
     if (db[modelName].associate) {
         db[modelName].associate(db);

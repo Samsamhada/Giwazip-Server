@@ -4,7 +4,8 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
-    operatorsAliases: false,
+    operatorsAliases: 0,
+    logging: false,
 
     pool: {
         max: dbConfig.pool.max,
@@ -26,6 +27,9 @@ db.userrooms = require("./userroom.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.posts = require("./post.model.js")(sequelize, Sequelize);
 db.photos = require("./photo.model.js")(sequelize, Sequelize);
+
+db.admins = require("./admin.model.js")(sequelize, Sequelize);
+db.notices = require("./notice.model.js")(sequelize, Sequelize);
 
 Object.keys(db).forEach((modelName) => {
     if (db[modelName].associate) {
@@ -65,5 +69,8 @@ db["posts"].belongsTo(db["rooms"], { as: "room", foreignKey: "roomID" });
 
 db["posts"].hasMany(db["photos"], { as: "photos", foreignKey: "postID" });
 db["photos"].belongsTo(db["posts"], { as: "post", foreignKey: "postID" });
+
+db["admins"].hasMany(db["notices"], { as: "notices", foreignKey: "adminID" });
+db["notices"].belongsTo(db["admins"], { as: "admin", foreignKey: "adminID" });
 
 module.exports = db;

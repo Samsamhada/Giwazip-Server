@@ -277,9 +277,9 @@ exports.update = (req, res) => {
         res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
-                "YYYY-MM-DD HH:mm:ss.SSS"
+                dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "POST /workers"
+                `PUT /workers/${id}`
             )} (IP: ${IP})`
         );
     }
@@ -345,7 +345,7 @@ exports.delete = (req, res) => {
             `[${moment().format(
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "DELETE /workers/${id}"
+                `DELETE /workers/${id}`
             )} (IP: ${IP})`
         );
     }

@@ -1,36 +1,42 @@
 module.exports = (sequelize, Sequelize) => {
-    const Worker = sequelize.define(
-        "Worker",
+    const Admin = sequelize.define(
+        "Admin",
         {
-            userID: {
+            adminID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "user_id",
+                field: "admin_id",
                 primaryKey: true,
+                autoIncrement: true,
             },
-            userIdentifier: {
+            id: {
                 type: Sequelize.STRING,
                 allowNull: false,
-                field: "user_identifier",
-                unique: true,
+                field: "id",
+            },
+            pw: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                field: "pw",
             },
             name: {
                 type: Sequelize.STRING,
                 allowNull: false,
                 field: "name",
             },
-            email: {
-                type: Sequelize.STRING,
+            allowChanging: {
+                type: Sequelize.BOOLEAN,
                 allowNull: false,
-                field: "email",
+                defaultValue: false,
+                field: "allow_changing",
             },
         },
         {
             timestamps: false,
             freezeTableName: true,
-            tableName: "worker",
+            tableName: "admin",
         }
     );
 
-    return Worker;
+    return Admin;
 };

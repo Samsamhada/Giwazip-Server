@@ -1,34 +1,28 @@
 module.exports = (sequelize, Sequelize) => {
-    const Post = sequelize.define(
-        "Post",
+    const Notice = sequelize.define(
+        "Notice",
         {
-            postID: {
+            noticeID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "post_id",
+                field: "notice_id",
                 primaryKey: true,
                 autoIncrement: true,
             },
-            roomID: {
+            adminID: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                field: "room_id",
+                field: "admin_id",
             },
-            userID: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                field: "user_id",
-            },
-            categoryID: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                field: "category_id",
-            },
-            description: {
+            title: {
                 type: Sequelize.STRING,
-                defaultValue: "",
                 allowNull: false,
-                field: "description",
+                field: "title",
+            },
+            content: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                field: "content",
             },
             createDate: {
                 type: Sequelize.DATE,
@@ -36,13 +30,19 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
                 field: "create_date",
             },
+            isHidden: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+                field: "is_hidden",
+            },
         },
         {
             timestamps: false,
             freezeTableName: true,
-            tableName: "post",
+            tableName: "notice",
         }
     );
 
-    return Post;
+    return Notice;
 };

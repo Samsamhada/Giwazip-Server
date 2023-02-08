@@ -13,12 +13,8 @@ const success = `🟢${chalk.green("Success:")}`;
 const badAccessError = `🔴${chalk.red("Error:")}`;
 const unknownError = `🟣${purple("Error:")}`;
 const reqHeaderIPField = "X-FORWARDED-FOR";
-const reqHeaderAPIKeyField = "API-Key";
+const reqHeaderAPIKeyField = "x-api-key";
 const asc = "ASC";
-const userLabel = "User";
-const workerLabel = "Worker";
-const roomLabel = "Room";
-const userroomLabel = "User-Room";
 
 dotenv.config();
 
@@ -34,30 +30,30 @@ exports.create = (req, res) => {
 
         User.create(user)
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${userLabel} 테이블`
+                        `${User.name} 테이블`
                     )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `새로운 ${userLabel}를 추가하는 중에 문제가 발생했습니다.`,
+                    message: `새로운 ${User.name}를 추가하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} 새로운 ${chalk.yellow(
-                        userLabel
+                        User.name
                     )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -83,30 +79,30 @@ exports.findAll = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
+                res.status(200).send(data);
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
+                        `${User.name} + ${Worker.name} 테이블`
                     )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
                 );
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} + ${workerLabel} 테이블을 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} 테이블을 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
+                        `${User.name} + ${Worker.name} 테이블`
                     )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -122,7 +118,7 @@ exports.findOne = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        User.findAll({
+        User.findOne({
             where: { userID: id },
             include: [
                 {
@@ -133,25 +129,42 @@ exports.findOne = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `${id}번`
-                    )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${User.name} + ${Worker.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${User.name} + ${Worker.name} 테이블에서 ${id}번 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${User.name} + ${Worker.name} 테이블`
+                        )}에서 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} + ${workerLabel} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} 테이블의 ${id}번 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} 테이블`
+                        `${User.name} + ${Worker.name} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -160,7 +173,7 @@ exports.findOne = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -176,9 +189,9 @@ exports.findOneWithRoom = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        User.findAll({
+        User.findOne({
             where: { userID: id },
-            order: [["userID", asc]],
+            order: [["userrooms", "roomID", asc]],
             include: [
                 {
                     model: Worker,
@@ -189,7 +202,6 @@ exports.findOneWithRoom = (req, res) => {
                     model: UserRoom,
                     as: "userrooms",
                     attributes: ["roomID"],
-                    order: [["roomID", asc]],
                     include: [
                         {
                             model: Room,
@@ -207,25 +219,42 @@ exports.findOneWithRoom = (req, res) => {
             ],
         })
             .then((data) => {
-                res.send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블`
-                    )}의 ${chalk.yellow(
-                        `userID=${id}`
-                    )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
-                );
+                if (data) {
+                    res.status(200).send(data);
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `userID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블에서 userID=${id}인 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `userID=${id}`
+                        )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블의 userID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블의 userID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} + ${workerLabel} + ${userroomLabel} + ${roomLabel} 테이블`
+                        `${User.name} + ${Worker.name} + ${UserRoom.name} + ${Room.name} 테이블`
                     )}의 ${chalk.yellow(
                         `userID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -234,7 +263,7 @@ exports.findOneWithRoom = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
@@ -248,6 +277,7 @@ exports.findOneWithRoom = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+    const number = req.body.number;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         User.update(req.body, {
@@ -256,41 +286,54 @@ exports.update = (req, res) => {
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.send(data[1][0]);
+                    res.status(200).send(data[1][0]);
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${userLabel} 테이블`
+                            `${User.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
-                } else {
-                    res.send({
-                        message: `${userLabel} 테이블의 ${id}번 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다.`,
+                } else if (!number) {
+                    res.status(400).send({
+                        message: `${User.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
                     });
                     console.log(
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${userLabel} 테이블`
+                            `${User.name} 테이블`
                         )}의 ${chalk.yellow(
                             `${id}번`
-                        )} 데이터를 수정할 수 없습니다. 해당 데이터를 찾을 수 없거나, request의 body가 비어있습니다. (IP: ${IP})`
+                        )} 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${User.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${User.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 수정을 시도했지만, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
                     );
                 }
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${userLabel} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} 테이블의 ${id}번 데이터를 수정하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${userLabel} 테이블`
+                        `${User.name} 테이블`
                     )}의 ${chalk.yellow(
                         `${id}번`
                     )} 데이터를 수정하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -299,12 +342,78 @@ exports.update = (req, res) => {
                 );
             });
     } else {
-        res.status(401).send({ message: "Connection Fail" });
+        res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "PUT /users/${id}"
+                `PUT /users/${id}`
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.delete = (req, res) => {
+    const id = req.params.id;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        User.destroy({
+            where: { userID: id },
+        })
+            .then((num) => {
+                if (num == 1) {
+                    res.status(200).send({
+                        message: `${User.name} 테이블의 ${id}번 데이터가 성공적으로 삭제되었습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${User.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터가 성공적으로 삭제되었습니다. (IP: ${IP})`
+                    );
+                } else {
+                    res.status(404).send({
+                        message: `${User.name} 테이블에서 ${id}번 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다.`,
+                    });
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${badAccessError} ${chalk.yellow(
+                            `${User.name} 테이블`
+                        )}의 ${chalk.yellow(
+                            `${id}번`
+                        )} 데이터의 삭제를 시도했으나, 해당 데이터를 찾을 수 없습니다. (IP: ${IP})`
+                    );
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${User.name} 테이블의 ${id}번 데이터를 삭제하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${User.name} 테이블`
+                    )}의 ${chalk.yellow(
+                        `${id}번`
+                    )} 데이터를 삭제하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        "상세정보: " + err.message
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                `DELETE /users/${id}`
             )} (IP: ${IP})`
         );
     }

@@ -4,7 +4,8 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
-    operatorsAliases: false,
+    operatorsAliases: 0,
+    logging: false,
 
     pool: {
         max: dbConfig.pool.max,
@@ -27,34 +28,49 @@ db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.posts = require("./post.model.js")(sequelize, Sequelize);
 db.photos = require("./photo.model.js")(sequelize, Sequelize);
 
+db.admins = require("./admin.model.js")(sequelize, Sequelize);
+db.notices = require("./notice.model.js")(sequelize, Sequelize);
+
 Object.keys(db).forEach((modelName) => {
     if (db[modelName].associate) {
         db[modelName].associate(db);
     }
 });
 
-db["users"].hasOne(db["workers"], { foreignKey: "userID" });
-db["workers"].belongsTo(db["users"], { foreignKey: "userID" });
+db["users"].hasOne(db["workers"], { as: "worker", foreignKey: "userID" });
+db["workers"].belongsTo(db["users"], { as: "user", foreignKey: "userID" });
 
-db["users"].hasMany(db["userrooms"], { foreignKey: "userID" });
-db["userrooms"].belongsTo(db["users"], { foreignKey: "userID" });
+db["users"].hasMany(db["userrooms"], { as: "userrooms", foreignKey: "userID" });
+db["userrooms"].belongsTo(db["users"], { as: "user", foreignKey: "userID" });
 
-db["rooms"].hasMany(db["userrooms"], { foreignKey: "roomID" });
-db["userrooms"].belongsTo(db["rooms"], { foreignKey: "roomID" });
+db["rooms"].hasMany(db["userrooms"], { as: "userrooms", foreignKey: "roomID" });
+db["userrooms"].belongsTo(db["rooms"], { as: "room", foreignKey: "roomID" });
 
-db["rooms"].hasMany(db["categories"], { foreignKey: "roomID" });
-db["categories"].belongsTo(db["rooms"], { foreignKey: "roomID" });
+db["rooms"].hasMany(db["categories"], {
+    as: "categories",
+    foreignKey: "roomID",
+});
+db["categories"].belongsTo(db["rooms"], { as: "room", foreignKey: "roomID" });
 
-db["categories"].hasMany(db["posts"], { foreignKey: "categoryID" });
-db["posts"].belongsTo(db["categories"], { foreignKey: "categoryID" });
+db["categories"].hasMany(db["posts"], {
+    as: "posts",
+    foreignKey: "categoryID",
+});
+db["posts"].belongsTo(db["categories"], {
+    as: "category",
+    foreignKey: "categoryID",
+});
 
-db["users"].hasMany(db["posts"], { foreignKey: "userID" });
-db["posts"].belongsTo(db["users"], { foreignKey: "userID" });
+db["users"].hasMany(db["posts"], { as: "posts", foreignKey: "userID" });
+db["posts"].belongsTo(db["users"], { as: "user", foreignKey: "userID" });
 
-db["rooms"].hasMany(db["posts"], { foreignKey: "roomID" });
-db["posts"].belongsTo(db["rooms"], { foreignKey: "roomID" });
+db["rooms"].hasMany(db["posts"], { as: "posts", foreignKey: "roomID" });
+db["posts"].belongsTo(db["rooms"], { as: "room", foreignKey: "roomID" });
 
-db["posts"].hasMany(db["photos"], { foreignKey: "postID" });
-db["photos"].belongsTo(db["posts"], { foreignKey: "postID" });
+db["posts"].hasMany(db["photos"], { as: "photos", foreignKey: "postID" });
+db["photos"].belongsTo(db["posts"], { as: "post", foreignKey: "postID" });
+
+db["admins"].hasMany(db["notices"], { as: "notices", foreignKey: "adminID" });
+db["notices"].belongsTo(db["admins"], { as: "admin", foreignKey: "adminID" });
 
 module.exports = db;

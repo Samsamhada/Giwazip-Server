@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Photo = sequelize.define(
-        "photo",
+        "Photo",
         {
             photoID: {
                 type: Sequelize.INTEGER,

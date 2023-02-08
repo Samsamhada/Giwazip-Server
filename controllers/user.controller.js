@@ -121,15 +121,15 @@ exports.createWithWorker = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `새로운 ${User.name} + ${Worker.name}를 추가하는 중에 문제가 발생했습니다.`,
+                    message: `${User.name} + ${Worker.name} 테이블에 새로운 데이터를 추가하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
-                    )}] ${unknownError} 새로운 ${chalk.yellow(
-                        `${User.name} + ${Worker.name}`
-                    )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${User.name} + ${Worker.name} 테이블`
+                    )}에 새로운 데이터를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
                 );

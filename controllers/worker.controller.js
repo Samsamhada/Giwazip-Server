@@ -277,7 +277,7 @@ exports.update = (req, res) => {
         res.status(403).send({ message: "Connection Fail" });
         console.log(
             `[${moment().format(
-                "YYYY-MM-DD HH:mm:ss.SSS"
+                dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 `PUT /workers/${id}`
             )} (IP: ${IP})`

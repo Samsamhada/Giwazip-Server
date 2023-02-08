@@ -135,7 +135,7 @@ exports.create = (req, res) => {
     }
 };
 
-exports.createWithCategory = (req, res) => {
+exports.createWithUserRoomAndCategory = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {

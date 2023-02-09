@@ -69,7 +69,7 @@ const imageUploader = multer({
                 );
                 return callback(
                     null,
-                    `${uploadDirectory}/${moment().format(dateFormat)}-${
+                    `${uploadDirectory}/${moment().format("YYMMDDHHmmssSSS")}-${
                         file.originalname
                     }`
                 );

@@ -21,8 +21,8 @@ exports.create = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        let postID = req.body.postID;
-        let url = req.file.location;
+        const postID = req.body.postID;
+        const url = req.file.location;
 
         if (!postID || !url) {
             res.status(400).send({

@@ -24,9 +24,9 @@ exports.create = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        let roomID = req.body.roomID;
-        let userID = req.body.userID;
-        let categoryID = req.body.categoryID;
+        const roomID = req.body.roomID;
+        const userID = req.body.userID;
+        const categoryID = req.body.categoryID;
 
         if (!roomID || !userID || !categoryID) {
             res.status(400).send({

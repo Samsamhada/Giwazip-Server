@@ -7,6 +7,8 @@ const moment = require("moment");
 const dotenv = require("dotenv");
 const chalk = require("chalk");
 
+const dateFormat = "YYYY-MM-DD HH:mm:ss.SSS";
+
 const reqHeaderIPField = "X-FORWARDED-FOR";
 const reqHeaderAPIKeyField = "x-api-key";
 
@@ -46,32 +48,38 @@ const imageUploader = multer({
             if (req.header(reqHeaderAPIKeyField) == process.env.API_KEY) {
                 const uploadDirectory = "photos";
                 const extension = path.extname(file.originalname);
+
                 if (!allowedExtensions.includes(extension)) {
                     console.log(
                         `[${moment().format(
-                            "YYYY-MM-DD HH:mm:ss.SSS"
+                            dateFormat
                         )}] ${badAccessError} 허용되지 않은 확장자(${chalk.yellow(
                             extension
                         )})로 업로드를 시도했습니다. (IP: ${IP})`
                     );
                     return callback(new Error("wrong extension"));
                 }
+
                 console.log(
                     `[${moment().format(
-                        "YYYY-MM-DD HH:mm:ss.SSS"
-                    )}] ${success} 성공적으로 사진을 업로드 했습니다. (IP: ${IP})`
+                        dateFormat
+                    )}] ${success} 성공적으로 ${chalk.yellow(
+                        file.originalname
+                    )} 사진을 업로드 했습니다. (IP: ${IP})`
                 );
-                callback(
+                return callback(
                     null,
-                    `${uploadDirectory}/${moment().format(
-                        "YYYYMMDDHHmmssSSS"
-                    )}-${file.originalname}`
+                    `${uploadDirectory}/${moment().format(dateFormat)}-${
+                        file.originalname
+                    }`
                 );
             } else {
                 console.log(
                     `[${moment().format(
-                        "YYYY-MM-DD HH:mm:ss.SSS"
-                    )}] ${badAccessError} Connection Fail at Image Uploader (IP: ${IP})`
+                        dateFormat
+                    )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                        "Image Uploader"
+                    )} (IP: ${IP})`
                 );
                 return callback(new Error("Connection Fail"));
             }

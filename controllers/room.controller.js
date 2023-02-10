@@ -135,6 +135,157 @@ exports.create = (req, res) => {
     }
 };
 
+exports.createWithUserRoomAndCategory = (req, res) => {
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        const name = req.body.name;
+        const userID = req.body.userrooms.userID;
+        const categories = req.body.categories;
+
+        function stringToDate(str) {
+            let year = str.substr(0, 4);
+            let month = str.substr(5, 2);
+            let day = str.substr(8, 2);
+
+            let hour = str.substr(11, 2);
+            let minute = str.substr(14, 2);
+            let second = str.substr(17, 2);
+            let millisec = str.substr(20, 3);
+
+            return new Date(
+                year,
+                month - 1,
+                day,
+                hour,
+                minute,
+                second,
+                millisec
+            );
+        }
+
+        function generateRandomString(stringLength = 6) {
+            const characters =
+                "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            let randomString = "";
+
+            for (let i = 0; i < stringLength; i++) {
+                const randomNumber = Math.floor(
+                    Math.random() * characters.length
+                );
+                randomString += characters.substring(
+                    randomNumber,
+                    randomNumber + 1
+                );
+            }
+
+            return randomString;
+        }
+
+        const inviteCode = generateRandomString();
+        let startDate = req.body.startDate;
+        let endDate = req.body.endDate;
+
+        if (startDate) {
+            startDate = stringToDate(startDate);
+        }
+        if (endDate) {
+            endDate = stringToDate(endDate);
+        }
+
+        if (!name) {
+            res.status(400).send({
+                message: `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블의 필수 정보 name이 누락 되었습니다!`,
+            });
+            console.log(
+                `[${moment().format(
+                    dateFormat
+                )}] ${badAccessError} ${chalk.yellow(
+                    `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블`
+                )}의 필수 데이터 name을 포함하지 않고 Create를 시도했습니다. (IP: ${IP})`
+            );
+            return;
+        }
+
+        if (!userID) {
+            res.status(400).send({
+                message: `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블의 필수 정보 userID가 누락 되었습니다!`,
+            });
+            console.log(
+                `[${moment().format(
+                    dateFormat
+                )}] ${badAccessError} ${chalk.yellow(
+                    `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블`
+                )}의 필수 데이터 userID를 포함하지 않고 Create를 시도했습니다. (IP: ${IP})`
+            );
+            return;
+        }
+
+        if (!categories) {
+            res.status(400).send({
+                message: `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블의 필수 정보 category가 누락 되었습니다!`,
+            });
+            console.log(
+                `[${moment().format(
+                    dateFormat
+                )}] ${badAccessError} ${chalk.yellow(
+                    `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블`
+                )}의 필수 데이터 category를 포함하지 않고 Create를 시도했습니다. (IP: ${IP})`
+            );
+            return;
+        }
+
+        const roomCategory = {
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+            warrantyTime: req.body.warrantyTime,
+            inviteCode: inviteCode,
+            userrooms: { userID: userID },
+            categories: categories,
+        };
+
+        Room.create(roomCategory, {
+            include: [
+                { model: UserRoom, as: "userrooms" },
+                { model: Category, as: "categories" },
+            ],
+        })
+            .then((data) => {
+                res.status(200).send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블`
+                    )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블에 새로운 데이터를 추가하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Room.name} + ${UserRoom.name} + ${Category.name} 테이블`
+                    )}에 새로운 데이터를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "POST /rooms/category"
+            )} (IP: ${IP})`
+        );
+    }
+};
+
 exports.findAll = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 

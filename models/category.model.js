@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
                 field: "name",
             },
             progress: {
-                type: Sequelize.INTEGER,
+                type: (Sequelize.DECIMAL.types.postgres = ["numeric"]),
                 defaultValue: 0,
                 allowNull: false,
                 field: "progress",

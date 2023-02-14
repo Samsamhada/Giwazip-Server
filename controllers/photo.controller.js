@@ -21,8 +21,8 @@ exports.create = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        let postID = req.body.postID;
-        let url = req.file.location;
+        const postID = req.body.postID;
+        const url = req.file.location;
 
         if (!postID || !url) {
             res.status(400).send({
@@ -74,6 +74,69 @@ exports.create = (req, res) => {
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
                 "POST /photos"
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.createMulti = (req, res) => {
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        const postID = req.body.postID;
+        const photos = [];
+
+        for (idx = 0; idx < req.files.length; idx++) {
+            photos.push({ postID: postID, url: req.files[idx].location });
+
+            if (!postID || !photos[idx].url) {
+                res.status(400).send({
+                    message: `${Photo.name} 테이블의 필수 정보가 누락 되었습니다!`,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${badAccessError} ${chalk.yellow(
+                        `${Photo.name} 테이블`
+                    )}의 필수 데이터를 포함하지 않고 Create를 시도했습니다. (IP: ${IP})`
+                );
+                return;
+            }
+        }
+
+        Photo.bulkCreate(photos)
+            .then((data) => {
+                res.status(200).send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${Photo.name} 테이블`
+                    )}에 새로운 데이터 ${chalk.yellow(
+                        `${data.length}개`
+                    )}가 성공적으로 추가되었습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `새로운 ${Photo.name} ${data.length}개를 추가하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} 새로운 ${chalk.yellow(
+                        `${Photo.name} ${data.length}개`
+                    )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "POST /photos/multi"
             )} (IP: ${IP})`
         );
     }

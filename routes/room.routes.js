@@ -4,6 +4,7 @@ module.exports = (app) => {
     var router = require("express").Router();
 
     router.post("/", rooms.create);
+    router.post("/category", rooms.createWithUserRoomAndCategory);
 
     router.get("/", rooms.findAll);
     router.get("/:id", rooms.findOne);

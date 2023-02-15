@@ -21,7 +21,7 @@ dotenv.config();
 const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
-    const IP = req.header("X-FORWARDED-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         const user = {

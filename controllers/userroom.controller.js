@@ -80,7 +80,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const IP = req.header("X-FORWARDE-FOR") || req.socket.remoteAddress;
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         UserRoom.findAll({ order: [["userRoomID", asc]] })

@@ -112,7 +112,7 @@ exports.createWithPhotos = (req, res) => {
             }
         }
 
-        if (!photos) {
+        if (photos.length == 0) {
             res.status(400).send({
                 message: `${Post.name} + ${Photo.name} 테이블의 필수 정보 사진 정보가 누락 되었습니다. 이는 사진 업로드 중에 문제가 생겼거나, 사진을 제외하고 업로드를 시도했을 수 있습니다.`,
             });

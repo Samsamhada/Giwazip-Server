@@ -8,7 +8,7 @@ module.exports = (app) => {
     router.post("/", posts.create);
     router.post(
         "/photo",
-        imageUploader.array("photos", 5),
+        imageUploader.array("files", 5),
         posts.createWithPhotos
     );
 

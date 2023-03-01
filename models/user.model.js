@@ -12,6 +12,7 @@ module.exports = (sequelize, Sequelize) => {
             number: {
                 type: Sequelize.STRING,
                 field: "number",
+                unique: true,
             },
         },
         {

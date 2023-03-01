@@ -8,10 +8,7 @@ module.exports = (app) => {
 
     router.get("/", rooms.findAll);
     router.get("/:id", rooms.findOne);
-    router.get("/category/:id", rooms.findOneWithCategory);
-    router.get("/post/:id", rooms.findOneWithPost);
     router.get("/category-post/:id", rooms.findOneWithCategoryAndPost);
-    router.get("/post-category/:id", rooms.findOneWithPostAndCategory);
     router.get("/user/:id", rooms.findOneWithUser);
     router.get("/invite-code/:inviteCode", rooms.findOneByInviteCode);
 

@@ -69,11 +69,12 @@ exports.createWithWorker = (req, res) => {
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         const userID = req.body.userID;
+        const workerID = req.body.worker.userID;
         const userIdentifier = req.body.worker.userIdentifier;
         const name = req.body.worker.name;
         const email = req.body.worker.email;
 
-        if (userID) {
+        if (userID || workerID) {
             res.status(400).send({
                 message: `${User.name} + ${Worker.name} 테이블에 userID는 직접 지정할 수 없습니다!`,
             });

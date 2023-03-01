@@ -65,7 +65,7 @@ exports.create = (req, res) => {
                         dateFormat
                     )}] ${unknownError} 새로운 ${chalk.yellow(
                         Admin.name
-                    )}를 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
+                    )}을 추가하는 중에 문제가 발생했습니다. ${chalk.dim(
                         `상세정보: ${err.message}`
                     )} (IP: ${IP})`
                 );

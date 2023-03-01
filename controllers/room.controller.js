@@ -553,7 +553,10 @@ exports.findOneWithCategoryAndPost = (req, res) => {
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         Room.findOne({
             where: { roomID: id },
-            order: [["posts", "postID", asc]],
+            order: [
+                ["categories", "categoryID", asc],
+                ["posts", "postID", asc],
+            ],
             include: [
                 {
                     model: Category,

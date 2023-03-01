@@ -217,6 +217,7 @@ exports.update = (req, res) => {
     const content = req.body.content;
     const createDate = req.body.createDate;
     const isHidden = req.body.isHidden;
+    const adminID = req.body.adminID;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
         if (createDate) {
@@ -253,7 +254,7 @@ exports.update = (req, res) => {
                             `${id}번`
                         )} 데이터가 성공적으로 수정되었습니다. (IP: ${IP})`
                     );
-                } else if (!title && !content && !isHidden) {
+                } else if (!title && !content && !isHidden && !adminID) {
                     res.status(400).send({
                         message: `${Notice.name} 테이블의 ${id}번 데이터의 수정을 시도했지만, request의 body가 비어있어 수정할 수 없습니다.`,
                     });

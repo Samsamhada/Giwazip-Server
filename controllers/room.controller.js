@@ -546,7 +546,7 @@ exports.findOneWithPost = (req, res) => {
     }
 };
 
-exports.findOneWithCategoryAndPostCategory = (req, res) => {
+exports.findOneWithCategoryAndPost = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 

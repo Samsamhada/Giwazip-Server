@@ -437,7 +437,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${success} ${chalk.yellow(
-                            `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블`
+                            `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
@@ -448,7 +448,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
                         `[${moment().format(
                             dateFormat
                         )}] ${badAccessError} ${chalk.yellow(
-                            `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블`
+                            `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블`
                         )}의 ${chalk.yellow(
                             `roomID=${id}`
                         )}인 데이터를 찾을 수 없습니다. (IP: ${IP})`
@@ -457,14 +457,14 @@ exports.findOneWithCategoryAndPost = (req, res) => {
             })
             .catch((err) => {
                 res.status(500).send({
-                    message: `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
+                    message: `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블의 roomID=${id}인 데이터를 조회하는 중에 문제가 발생했습니다.`,
                     detail: err.message,
                 });
                 console.log(
                     `[${moment().format(
                         dateFormat
                     )}] ${unknownError} ${chalk.yellow(
-                        `${Room.name} + ${Post.name} + ${Category.name} + ${Photo.name} 테이블`
+                        `${Room.name} + ${Category.name} + ${Post.name} + ${Photo.name} 테이블`
                     )}의 ${chalk.yellow(
                         `roomID=${id}`
                     )}인 데이터를 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
@@ -478,7 +478,7 @@ exports.findOneWithCategoryAndPost = (req, res) => {
             `[${moment().format(
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                `GET /rooms/post-category/${id}`
+                `GET /rooms/category-post/${id}`
             )} (IP: ${IP})`
         );
     }

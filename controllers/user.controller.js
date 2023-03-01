@@ -24,18 +24,35 @@ exports.create = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
+        const number = req.body.number;
+
         const user = {
-            number: req.body.number,
+            number: number,
         };
 
-        User.create(user)
+        User.findOrCreate({
+            where: { number: number },
+            defaults: user,
+        })
             .then((data) => {
-                res.status(200).send(data);
-                console.log(
-                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
-                        `${User.name} 테이블`
-                    )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
-                );
+                res.status(200).send(data[0]);
+                if (data[1]) {
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${User.name} 테이블`
+                        )}에 새로운 데이터가 성공적으로 추가되었습니다. (IP: ${IP})`
+                    );
+                } else {
+                    console.log(
+                        `[${moment().format(
+                            dateFormat
+                        )}] ${success} ${chalk.yellow(
+                            `${data[0].userID}번 유저`
+                        )}가 로그인에 성공했습니다. (IP: ${IP})`
+                    );
+                }
             })
             .catch((err) => {
                 res.status(500).send({

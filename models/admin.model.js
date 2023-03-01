@@ -13,6 +13,7 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 allowNull: false,
                 field: "id",
+                unique: true,
             },
             pw: {
                 type: Sequelize.STRING,
@@ -23,6 +24,7 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 allowNull: false,
                 field: "name",
+                unique: true,
             },
             allowChanging: {
                 type: Sequelize.BOOLEAN,

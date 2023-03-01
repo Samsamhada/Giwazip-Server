@@ -48,7 +48,12 @@ exports.create = (req, res) => {
 
         Admin.create(admin)
             .then((data) => {
-                res.status(200).send(data);
+                res.status(200).send({
+                    adminID: data.adminID,
+                    id: data.id,
+                    name: data.name,
+                    allowChanging: data.allowChanging,
+                });
                 console.log(
                     `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
                         `${Admin.name} 테이블`
@@ -86,7 +91,10 @@ exports.findAll = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Admin.findAll({ order: [["adminID", asc]] })
+        Admin.findAll({
+            attributes: ["adminID", "id", "name", "allowChanging"],
+            order: [["adminID", asc]],
+        })
             .then((data) => {
                 res.status(200).send(data);
                 console.log(
@@ -127,7 +135,9 @@ exports.findOne = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
     if (req.header(reqHeaderAPIKeyField) == apiKey) {
-        Admin.findByPk(id)
+        Admin.findByPk(id, {
+            attributes: ["adminID", "id", "name", "allowChanging"],
+        })
             .then((data) => {
                 if (data) {
                     res.status(200).send(data);
@@ -199,7 +209,12 @@ exports.update = (req, res) => {
         })
             .then((data) => {
                 if (data[0] == 1) {
-                    res.status(200).send(data[1][0]);
+                    res.status(200).send({
+                        adminID: data[1][0].adminID,
+                        id: data[1][0].id,
+                        name: data[1][0].name,
+                        allowChanging: data[1][0].allowChanging,
+                    });
                     console.log(
                         `[${moment().format(
                             dateFormat

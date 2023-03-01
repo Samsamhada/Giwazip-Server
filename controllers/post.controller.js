@@ -27,8 +27,9 @@ exports.create = (req, res) => {
         const roomID = req.body.roomID;
         const userID = req.body.userID;
         const categoryID = req.body.categoryID;
+        const description = req.body.description;
 
-        if (!roomID || !userID || !categoryID) {
+        if (!roomID || !userID || !categoryID || !description) {
             res.status(400).send({
                 message: `${Post.name} 테이블의 필수 정보가 누락 되었습니다.`,
             });
@@ -46,7 +47,7 @@ exports.create = (req, res) => {
             roomID: roomID,
             userID: userID,
             categoryID: categoryID,
-            description: req.body.description,
+            description: description,
         };
 
         Post.create(post)

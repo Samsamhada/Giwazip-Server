@@ -6,6 +6,7 @@ module.exports = (app) => {
     router.post("/", notices.create);
 
     router.get("/", notices.findAll);
+    router.get("/admin", notices.findAllWithAdmin);
     router.get("/:id", notices.findOne);
 
     router.put("/:id", notices.update);

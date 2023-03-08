@@ -16,12 +16,13 @@ const asc = "ASC";
 
 dotenv.config();
 
-const apiKey = process.env.ADMIN_KEY;
+const adminKey = process.env.ADMIN_KEY;
+const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         let adminID = req.body.adminID;
         let title = req.body.title;
         let content = req.body.content;
@@ -135,7 +136,7 @@ exports.findAll = (req, res) => {
 exports.findAllWithAdmin = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         Notice.findAll({
             order: [["noticeID", asc]],
             attributes: [
@@ -188,7 +189,7 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         Notice.findOne({
             where: { noticeID: id },
             order: [["noticeID", asc]],
@@ -268,7 +269,7 @@ exports.update = (req, res) => {
     const isHidden = req.body.isHidden;
     const adminID = req.body.adminID;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         if (createDate) {
             res.status(400).send({
                 message: `${Notice.name} 테이블의 ${id}번 데이터의 createDate를 ${createDate}로 변경할 수 없습니다.`,
@@ -364,7 +365,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         Notice.destroy({
             where: { noticeID: id },
         })

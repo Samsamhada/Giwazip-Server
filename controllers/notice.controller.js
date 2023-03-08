@@ -16,12 +16,13 @@ const asc = "ASC";
 
 dotenv.config();
 
-const apiKey = process.env.ADMIN_KEY;
+const adminKey = process.env.ADMIN_KEY;
+const apiKey = process.env.API_KEY;
 
 exports.create = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         let adminID = req.body.adminID;
         let title = req.body.title;
         let content = req.body.content;
@@ -86,7 +87,59 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (
+        req.header(reqHeaderAPIKeyField) == apiKey ||
+        req.header(reqHeaderAPIKeyField) == adminKey
+    ) {
+        Notice.findAll({
+            order: [["noticeID", asc]],
+            attributes: [
+                "noticeID",
+                "title",
+                "content",
+                "createDate",
+                "isHidden",
+            ],
+        })
+            .then((data) => {
+                res.status(200).send(data);
+                console.log(
+                    `[${moment().format(dateFormat)}] ${success} ${chalk.yellow(
+                        `${Notice.name} 테이블`
+                    )}의 모든 데이터를 성공적으로 조회했습니다. (IP: ${IP})`
+                );
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: `${Notice.name} 테이블을 조회하는 중에 문제가 발생했습니다.`,
+                    detail: err.message,
+                });
+                console.log(
+                    `[${moment().format(
+                        dateFormat
+                    )}] ${unknownError} ${chalk.yellow(
+                        `${Notice.name} 테이블`
+                    )}을 조회하는 중에 문제가 발생했습니다. ${chalk.dim(
+                        `상세정보: ${err.message}`
+                    )} (IP: ${IP})`
+                );
+            });
+    } else {
+        res.status(403).send({ message: "Connection Fail" });
+        console.log(
+            `[${moment().format(
+                dateFormat
+            )}] ${badAccessError} Connection Fail at ${chalk.yellow(
+                "GET /notices"
+            )} (IP: ${IP})`
+        );
+    }
+};
+
+exports.findAllWithAdmin = (req, res) => {
+    const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
+
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         Notice.findAll({
             order: [["noticeID", asc]],
             attributes: [
@@ -129,7 +182,7 @@ exports.findAll = (req, res) => {
             `[${moment().format(
                 dateFormat
             )}] ${badAccessError} Connection Fail at ${chalk.yellow(
-                "GET /notices"
+                "GET /notices/admin"
             )} (IP: ${IP})`
         );
     }
@@ -139,7 +192,7 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         Notice.findOne({
             where: { noticeID: id },
             order: [["noticeID", asc]],
@@ -219,7 +272,7 @@ exports.update = (req, res) => {
     const isHidden = req.body.isHidden;
     const adminID = req.body.adminID;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         if (createDate) {
             res.status(400).send({
                 message: `${Notice.name} 테이블의 ${id}번 데이터의 createDate를 ${createDate}로 변경할 수 없습니다.`,
@@ -315,7 +368,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (req.header(reqHeaderAPIKeyField) == adminKey) {
         Notice.destroy({
             where: { noticeID: id },
         })

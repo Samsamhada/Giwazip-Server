@@ -87,7 +87,10 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const IP = req.header(reqHeaderIPField) || req.socket.remoteAddress;
 
-    if (req.header(reqHeaderAPIKeyField) == apiKey) {
+    if (
+        req.header(reqHeaderAPIKeyField) == apiKey ||
+        req.header(reqHeaderAPIKeyField) == adminKey
+    ) {
         Notice.findAll({
             order: [["noticeID", asc]],
             attributes: [
